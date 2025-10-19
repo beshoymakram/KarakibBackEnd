@@ -43,10 +43,8 @@ class WasteTypeController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(WasteType $wasteType, Request $request)
     {
-        $wasteType = WasteType::findOrFail($id);
-
         $data = $request->validate([
             'name' => 'string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',

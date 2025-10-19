@@ -11,7 +11,7 @@ class WasteItemController extends Controller
 {
     public function index()
     {
-        $wasteItems = WasteItem::all();
+        $wasteItems = WasteItem::with('wasteType')->get();
 
         return response()->json($wasteItems);
     }
