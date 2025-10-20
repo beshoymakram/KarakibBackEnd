@@ -1,12 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\WasteItemController;
 use App\Http\Controllers\Api\WasteTypeController;
+use App\Http\Controllers\ProductsCategoryController;
+use App\Models\ProductsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -70,7 +75,12 @@ Route::get('/waste-types/{id}', [WasteTypeController::class, 'show']);
 Route::get('/waste-items', [WasteItemController::class, 'index']);
 Route::get('/waste-items/{id}', [WasteItemController::class, 'show']);
 
+// Public product routes
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
 
+Route::get('/products-categories', [ProductsCategoryController::class, 'index']);
+Route::get('/products-categories/{id}', [ProductsCategoryController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/registerAdmin', [RegisterController::class, 'register'])->middleware('admin');
@@ -80,8 +90,28 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::delete('/profile/destroy', [ProfileController::class, 'destroy']);
 
+    // Cart
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'add']);
+    Route::put('/cart/{id}', [CartController::class, 'update']);
+    Route::delete('/cart/{id}', [CartController::class, 'remove']);
+    Route::delete('/cart', [CartController::class, 'clear']);
+
+    // Orders
+    Route::post('/checkout', [OrderController::class, 'checkout']);
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+
     // Your protected routes here
     Route::middleware('admin')->group(function () {
+        Route::post('/products-categories', [ProductsCategoryController::class, 'store']);
+        Route::put('/products-categories/{category}', [ProductsCategoryController::class, 'update']);
+        Route::delete('/products-categories/{category}', [ProductsCategoryController::class, 'destroy']);
+
+        Route::post('/products', [ProductController::class, 'store']);
+        Route::put('/products/{product}', [ProductController::class, 'update']);
+        Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+
         Route::post('/waste-types', [WasteTypeController::class, 'store']);
         Route::put('/waste-types/{wasteType}', [WasteTypeController::class, 'update']);
         Route::delete('/waste-types/{wasteType}', [WasteTypeController::class, 'destroy']);

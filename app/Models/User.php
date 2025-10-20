@@ -27,6 +27,8 @@ class User extends Authenticatable
         'avatar',
         'status',
         'password',
+        'points',
+        'balance'
     ];
 
     /**
@@ -60,5 +62,16 @@ class User extends Authenticatable
             return url('uploads/' . $this->avatar);
         }
         return null;
+    }
+
+    public function addPoints($points, $description = 'Earned points')
+    {
+        $this->points += $points;
+        $this->save();
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(UserAddress::class);
     }
 }
