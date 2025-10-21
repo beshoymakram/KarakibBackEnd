@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
 {
-    protected $fillable = ['user_id', 'product_id', 'quantity'];
+    protected $fillable = ['user_id', 'session_id', 'product_id', 'quantity'];
+    protected $appends = ['subtotal'];
 
     public function user()
     {
@@ -21,5 +22,19 @@ class CartItem extends Model
     public function getSubtotalAttribute()
     {
         return $this->quantity * $this->product->price;
+    }
+
+    // Scope for getting cart by user or session
+    public function scopeForCart($query, $userId = null, $sessionId = null)
+    {
+        if ($userId) {
+            return $query->where('user_id', $userId);
+        }
+
+        if ($sessionId) {
+            return $query->where('session_id', $sessionId)->whereNull('user_id');
+        }
+
+        return $query->whereRaw('1 = 0'); // Empty result
     }
 }
