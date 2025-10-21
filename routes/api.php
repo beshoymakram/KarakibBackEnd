@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RegisterController;
@@ -81,6 +82,9 @@ Route::get('/products/{id}', [ProductController::class, 'show']);
 
 Route::get('/products-categories', [ProductsCategoryController::class, 'index']);
 Route::get('/products-categories/{id}', [ProductsCategoryController::class, 'show']);
+
+Route::post('/payment/process', [PaymentController::class, 'processPayment']);
+Route::get('/payment/status/{id}', [PaymentController::class, 'getTransactionStatus']);
 
 // Cart
 Route::get('/cart', [CartController::class, 'index']);

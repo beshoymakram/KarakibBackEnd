@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
 
 class OrderController extends Controller
 {
@@ -35,7 +37,7 @@ class OrderController extends Controller
 
         try {
             $order = Order::create([
-                'order_number' => Order::generateOrderNumber(),
+                'order_number' => Order::generateNumber(),
                 'user_id' => $user->id,
                 'total' => $total,
                 'payment_method' => $validated['payment_method'],
@@ -57,12 +59,47 @@ class OrderController extends Controller
 
             // Clear cart
             CartItem::where('user_id', $user->id)->delete();
+            if ($validated['payment_method'] === 'cash') {
+                DB::commit();
+
+                return response()->json([
+                    'message' => 'Order placed successfully (Cash on Delivery)',
+                    'order' => $order->load('items.product'),
+                ], 201);
+            }
+
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $session = StripeSession::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'egp',
+                        'product_data' => [
+                            'name' => 'Order #' . $order->order_number,
+                        ],
+                        'unit_amount' => (int) ($total * 100), // in cents
+                    ],
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'metadata' => [
+                    'order_id' => $order->id,
+                ],
+                'success_url' => env('FRONTEND_URL') . '/payment-success?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => env('FRONTEND_URL') . '/payment-cancel',
+            ]);
+
+            $order->update([
+                'stripe_session_id' => $session->id,
+            ]);
 
             DB::commit();
 
             return response()->json([
-                'message' => 'Order placed successfully',
-                'order' => $order->load('items.product')
+                'message' => 'Stripe checkout session created',
+                'url' => $session->url,
+                'order_id' => $order->id,
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
