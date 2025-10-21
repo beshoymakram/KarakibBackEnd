@@ -72,8 +72,18 @@ class CartController extends Controller
             ->first();
 
         if ($cartItem) {
-            $cartItem->increment('quantity', $validated['quantity']);
+            $newQuantity = $cartItem->quantity + $validated['quantity'];
+
+            if ($product->stock < $newQuantity) {
+                return response()->json(['message' => 'Insufficient stock'], 400);
+            }
+
+            $cartItem->update(['quantity' => $newQuantity]);
         } else {
+            if ($product->stock < $validated['quantity']) {
+                return response()->json(['message' => 'Insufficient stock'], 400);
+            }
+
             $cartItem = CartItem::create([
                 'user_id' => $user?->id,
                 'session_id' => $user ? null : $sessionId,
