@@ -13,6 +13,14 @@ use Stripe\Checkout\Session as StripeSession;
 
 class OrderController extends Controller
 {
+    public function index()
+    {
+        $orders = Order::with(['items.product', 'user', 'address'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($orders);
+    }
+
     public function checkout(Request $request)
     {
         $validated = $request->validate([
@@ -145,24 +153,5 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return response()->json(['valid' => false, 'message' => $e->getMessage()], 400);
         }
-    }
-
-    public function index(Request $request)
-    {
-        $orders = Order::with('items.product')
-            ->where('user_id', $request->user()->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return response()->json($orders);
-    }
-
-    public function show(Request $request, $id)
-    {
-        $order = Order::with('items.product')
-            ->where('user_id', $request->user()->id)
-            ->findOrFail($id);
-
-        return response()->json($order);
     }
 }

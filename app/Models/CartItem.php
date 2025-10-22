@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CartItem extends Model
+class CartItem extends BaseModel
 {
     protected $fillable = ['user_id', 'session_id', 'product_id', 'quantity'];
     protected $appends = ['subtotal'];

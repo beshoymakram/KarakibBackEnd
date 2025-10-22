@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\DonationController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\OrderController;
@@ -94,6 +95,8 @@ Route::put('/cart/{id}', [CartController::class, 'update']);
 Route::delete('/cart/{id}', [CartController::class, 'remove']);
 Route::delete('/cart', [CartController::class, 'clear']);
 
+Route::post('/donate', [DonationController::class, 'checkout']);
+
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Route::get('/verify-payment', [OrderController::class, 'verifyPayment']);
 
@@ -110,6 +113,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/addresses', [ProfileController::class, 'createAddress']);
     Route::put('/profile/addresses/{address}', [ProfileController::class, 'updateAddress']);
     Route::delete('/profile/addresses/{address}', [ProfileController::class, 'deleteAddress']);
+    Route::get('/profile/orders', [ProfileController::class, 'getOrders']);
+    Route::put('/profile/orders/{order}/cancel', [ProfileController::class, 'cancelOrder']);
 
     // Merge guest cart on login (protected)
     Route::post('/cart/merge', [CartController::class, 'merge']);
@@ -121,6 +126,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Your protected routes here
     Route::middleware('admin')->group(function () {
+        Route::get('/donations', [DonationController::class, 'index']);
+
+        Route::get('/orders', [OrderController::class, 'index']);
+        Route::post('/orders', [OrderController::class, 'store']);
+        Route::put('/orders/{category}', [OrderController::class, 'update']);
+        Route::delete('/orders/{category}', [OrderController::class, 'destroy']);
+        Route::put('/orders/{order}/cancel', [OrderController::class, 'cancelOrder']);
+        Route::put('/orders/{order}/complete', [OrderController::class, 'completeOrder']);
+
         Route::post('/products-categories', [ProductsCategoryController::class, 'store']);
         Route::put('/products-categories/{category}', [ProductsCategoryController::class, 'update']);
         Route::delete('/products-categories/{category}', [ProductsCategoryController::class, 'destroy']);

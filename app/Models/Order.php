@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class Order extends BaseModel
 {
     protected $fillable = [
         'order_number',
@@ -14,8 +14,6 @@ class Order extends Model
         'stripe_payment_intent_id',
         'total',
         'status',
-        'address',
-        'phone',
         'payment_method'
     ];
 
@@ -26,6 +24,11 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(UserAddress::class, 'user_address_id');
     }
 
     public static function generateNumber()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
@@ -99,6 +100,31 @@ class ProfileController extends Controller
         $address->delete();
         return response()->json([
             'message' => 'Address deleted successfully'
+        ], 201);
+    }
+
+    public function getOrders(Request $request)
+    {
+        $orders = Order::with(['items.product', 'user', 'address'])
+            ->where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($orders);
+    }
+
+    public function cancelOrder(Order $order, Request $request)
+    {
+        if ($order->user_id !== $request->user()?->id) {
+            return response()->json(['message' => 'Order not found for this user'], 404);
+        }
+
+        $order->update([
+            'status' => 'cancelled'
+        ]);
+
+        return response()->json([
+            'message' => 'Order cancelled successfully'
         ], 201);
     }
 }
