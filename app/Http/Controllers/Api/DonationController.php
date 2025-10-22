@@ -25,7 +25,6 @@ class DonationController extends Controller
             'fund_name' => 'required|in:Education Fund,Reforestation,Community Health',
         ]);
 
-
         DB::beginTransaction();
 
         try {
@@ -46,8 +45,9 @@ class DonationController extends Controller
                         'currency' => 'egp',
                         'product_data' => [
                             'name' => 'Donation #' . $donation->donation_number,
+                            'description' => 'To support the ' . $donation->fund_name,
                         ],
-                        'unit_amount' => (int) ($donation->amount),
+                        'unit_amount' => (int) ($donation->amount * 100),
                     ],
                     'quantity' => 1,
                 ]],
@@ -75,6 +75,44 @@ class DonationController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Donation failed: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function verifyPayment(Request $request)
+    {
+        $sessionId = $request->query('transaction_id');
+        $donationNumber = $request->query('donation_number');
+
+        if (!$sessionId || !$donationNumber) {
+            return response()->json(['valid' => false, 'message' => 'Missing parameters'], 400);
+        }
+
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        try {
+            $session = StripeSession::retrieve($sessionId);
+            $paymentStatus = $session->payment_status ?? 'unpaid';
+            $paid = $paymentStatus === 'paid';
+
+            if (isset($session->metadata->donation_number) && $session->metadata->donation_number !== $donationNumber) {
+                return response()->json(['valid' => false, 'message' => 'Order mismatch'], 403);
+            }
+
+            if ($paid) {
+                $order = Donation::where('donation_number', $donationNumber)->first();
+                if ($order && $order->status !== 'completed') {
+                    $order->update(['status' => 'completed']);
+                }
+            }
+
+            return response()->json([
+                'valid' => $paid,
+                'payment_status' => $paymentStatus,
+                'donation_number' => $donationNumber,
+                'transaction_id' => $sessionId,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['valid' => false, 'message' => $e->getMessage()], 400);
         }
     }
 }

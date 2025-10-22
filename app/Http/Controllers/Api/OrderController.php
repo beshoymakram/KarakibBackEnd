@@ -154,4 +154,26 @@ class OrderController extends Controller
             return response()->json(['valid' => false, 'message' => $e->getMessage()], 400);
         }
     }
+
+    public function cancelOrder(Order $order, Request $request)
+    {
+        $order->update([
+            'status' => 'cancelled'
+        ]);
+
+        return response()->json([
+            'message' => 'Order cancelled successfully'
+        ], 201);
+    }
+
+    public function completeOrder(Order $order, Request $request)
+    {
+        $order->update([
+            'status' => 'completeled'
+        ]);
+
+        return response()->json([
+            'message' => 'Order completeled successfully'
+        ], 201);
+    }
 }

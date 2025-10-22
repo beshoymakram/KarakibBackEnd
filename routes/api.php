@@ -99,6 +99,7 @@ Route::post('/donate', [DonationController::class, 'checkout']);
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Route::get('/verify-payment', [OrderController::class, 'verifyPayment']);
+Route::get('/verify-donation', [DonationController::class, 'verifyDonation']);
 
 
 
