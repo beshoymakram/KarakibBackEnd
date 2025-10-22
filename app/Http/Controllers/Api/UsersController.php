@@ -50,6 +50,8 @@ class UsersController extends Controller
 
     public function destroy(User $user)
     {
+        $user->status = 'deleted';
+        $user->save();
         $user->delete();
         return response()->json([
             'message' => 'User deleted successfully'
