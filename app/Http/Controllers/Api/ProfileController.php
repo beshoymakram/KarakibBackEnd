@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -45,5 +46,59 @@ class ProfileController extends Controller
         return response()->json([
             'message' => 'Your account has been deleted successfully'
         ]);
+    }
+
+    public function getAddresses(Request $request)
+    {
+        $addresses = UserAddress::where('user_id', $request->user()?->id)->get();
+
+        return response()->json($addresses);
+    }
+
+    public function createAddress(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'street_address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+        ]);
+
+        $data['user_id'] = $request->user()?->id;
+
+        UserAddress::create($data);
+        return response()->json([
+            'message' => 'Address created successfully'
+        ], 201);
+    }
+
+    public function updateAddress(UserAddress $address, Request $request)
+    {
+        if ($address->user_id !== $request->user()?->id) {
+            return response()->json(['message' => 'Address not found for this user'], 404);
+        }
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'street_address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+        ]);
+
+        $address->update($data);
+        return response()->json([
+            'message' => 'Address updated successfully'
+        ], 201);
+    }
+
+    public function deleteAddress(UserAddress $address, Request $request)
+    {
+        if ($address->user_id !== $request->user()?->id) {
+            return response()->json(['message' => 'Address not found for this user'], 404);
+        }
+        $address->delete();
+        return response()->json([
+            'message' => 'Address deleted successfully'
+        ], 201);
     }
 }

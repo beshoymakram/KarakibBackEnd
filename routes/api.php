@@ -11,7 +11,8 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\WasteItemController;
 use App\Http\Controllers\Api\WasteTypeController;
-use App\Http\Controllers\ProductsCategoryController;
+use App\Http\Controllers\Api\ProductsCategoryController;
+use App\Http\Controllers\Api\StripeWebhookController;
 use App\Models\ProductsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -93,6 +94,10 @@ Route::put('/cart/{id}', [CartController::class, 'update']);
 Route::delete('/cart/{id}', [CartController::class, 'remove']);
 Route::delete('/cart', [CartController::class, 'clear']);
 
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+
+
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/registerAdmin', [RegisterController::class, 'register'])->middleware('admin');
     Route::post('/logout', [LogoutController::class, 'logout']);
@@ -100,10 +105,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::delete('/profile/destroy', [ProfileController::class, 'destroy']);
+    Route::get('/profile/addresses', [ProfileController::class, 'getAddresses']);
+    Route::post('/profile/addresses', [ProfileController::class, 'createAddress']);
+    Route::put('/profile/addresses/{address}', [ProfileController::class, 'updateAddress']);
+    Route::delete('/profile/addresses/{address}', [ProfileController::class, 'deleteAddress']);
 
     // Merge guest cart on login (protected)
     Route::post('/cart/merge', [CartController::class, 'merge']);
-
 
     // Orders
     Route::post('/checkout', [OrderController::class, 'checkout']);
@@ -130,6 +138,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/users', [UsersController::class, 'index']);
         Route::put('/users/{user}', [UsersController::class, 'update']);
+
         Route::delete('/users/{user}', [UsersController::class, 'destroy']);
     });
 });

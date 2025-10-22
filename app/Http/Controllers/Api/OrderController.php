@@ -78,20 +78,22 @@ class OrderController extends Controller
                         'product_data' => [
                             'name' => 'Order #' . $order->order_number,
                         ],
-                        'unit_amount' => (int) ($total * 100), // in cents
+                        'unit_amount' => (int) ($total * 100),
                     ],
                     'quantity' => 1,
                 ]],
                 'mode' => 'payment',
                 'metadata' => [
                     'order_id' => $order->id,
+                    'order_number' => $order->order_number,
                 ],
-                'success_url' => env('FRONTEND_URL') . '/payment-success?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => env('FRONTEND_URL') . '/payment-cancel',
+                'success_url' => env('FRONTEND_URL') . "/checkout/success?order_number={$order->order_number}&transaction_id={CHECKOUT_SESSION_ID}",
+                'cancel_url' => env('FRONTEND_URL') . "/checkout/failed?order_number={$order->order_number}&transaction_id={CHECKOUT_SESSION_ID}",
             ]);
 
             $order->update([
                 'stripe_session_id' => $session->id,
+                'stripe_payment_intent_id' => $session->payment_intent,
             ]);
 
             DB::commit();
