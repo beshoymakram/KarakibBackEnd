@@ -109,6 +109,44 @@ class OrderController extends Controller
         }
     }
 
+    public function verifyPayment(Request $request)
+    {
+        $sessionId = $request->query('transaction_id');
+        $orderNumber = $request->query('order_number');
+
+        if (!$sessionId || !$orderNumber) {
+            return response()->json(['valid' => false, 'message' => 'Missing parameters'], 400);
+        }
+
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        try {
+            $session = StripeSession::retrieve($sessionId);
+            $paymentStatus = $session->payment_status ?? 'unpaid';
+            $paid = $paymentStatus === 'paid';
+
+            if (isset($session->metadata->order_number) && $session->metadata->order_number !== $orderNumber) {
+                return response()->json(['valid' => false, 'message' => 'Order mismatch'], 403);
+            }
+
+            if ($paid) {
+                $order = Order::where('order_number', $orderNumber)->first();
+                if ($order && $order->status !== 'completed') {
+                    $order->update(['status' => 'completed']);
+                }
+            }
+
+            return response()->json([
+                'valid' => $paid,
+                'payment_status' => $paymentStatus,
+                'order_number' => $orderNumber,
+                'transaction_id' => $sessionId,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['valid' => false, 'message' => $e->getMessage()], 400);
+        }
+    }
+
     public function index(Request $request)
     {
         $orders = Order::with('items.product')

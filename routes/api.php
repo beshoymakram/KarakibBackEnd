@@ -95,6 +95,7 @@ Route::delete('/cart/{id}', [CartController::class, 'remove']);
 Route::delete('/cart', [CartController::class, 'clear']);
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+Route::get('/verify-payment', [OrderController::class, 'verifyPayment']);
 
 
 
