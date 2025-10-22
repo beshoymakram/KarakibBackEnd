@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\DonationController;
+use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\OrderController;
@@ -29,6 +30,8 @@ Route::options('{any}', function () {
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
+
+
 
 Route::get('/storage-link', function () {
     if (request()->input('secret') !== 'beshoy') {

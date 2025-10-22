@@ -28,7 +28,9 @@ class User extends Authenticatable
         'status',
         'password',
         'points',
-        'balance'
+        'balance',
+        'google_id',
+        'email_verified_at'
     ];
 
     /**

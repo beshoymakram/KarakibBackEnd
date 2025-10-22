@@ -78,7 +78,7 @@ class DonationController extends Controller
         }
     }
 
-    public function verifyPayment(Request $request)
+    public function verifyDonation(Request $request)
     {
         $sessionId = $request->query('transaction_id');
         $donationNumber = $request->query('donation_number');
