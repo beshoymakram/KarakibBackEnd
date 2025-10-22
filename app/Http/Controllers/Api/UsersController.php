@@ -48,8 +48,9 @@ class UsersController extends Controller
         ]);
     }
 
-    public function destroy(User $user)
+    public function destroy($userId)
     {
+        $user = User::withTrashed()->findOrFail($userId);
         $user->status = 'deleted';
         $user->save();
         $user->delete();
