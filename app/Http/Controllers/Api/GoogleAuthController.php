@@ -47,7 +47,7 @@ class GoogleAuthController extends Controller
                     'name' => $googleUser->name,
                     'email' => $googleUser->email,
                     'google_id' => $googleUser->id,
-                    'phone' => '', // Set default or ask later
+                    'phone' => null, // Set default or ask later
                     'type' => 'user',
                     'password' => Hash::make(Str::random(24)), // Random password
                     'email_verified_at' => now(), // Auto-verify Google users
