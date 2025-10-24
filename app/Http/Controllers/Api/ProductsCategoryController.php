@@ -30,7 +30,7 @@ class ProductsCategoryController extends Controller
         $category = ProductsCategory::create($data);
 
         return response()->json([
-            'message' => 'Category created successfully',
+            'message' => __('messages.category_created_successfully'),
             'data' => $category
         ], 201);
     }
@@ -46,7 +46,7 @@ class ProductsCategoryController extends Controller
         $category->update($data);
 
         return response()->json([
-            'message' => 'Category updated successfully',
+            'message' => __('messages.category_updated_successfully'),
             'data' => $category
         ]);
     }
@@ -58,7 +58,7 @@ class ProductsCategoryController extends Controller
         $category->delete();
 
         return response()->json([
-            'message' => 'Category deleted successfully'
+            'message' => __('messages.category_deleted_successfully')
         ]);
     }
 }

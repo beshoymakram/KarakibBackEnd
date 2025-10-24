@@ -30,13 +30,13 @@ class ProfileController extends Controller
         }
 
         if ($request->user()->google_id && ($data['email'] !== $request->user()->email)) {
-            return response()->json(['message' => "Users registered with google can't change their email."], 404);
+            return response()->json(['message' => _("messages.Users registered with google can't change their email.")], 404);
         }
 
         $request->user()->update($data);
 
         return response()->json([
-            'message' => 'Personal info updated successfully',
+            'message' => __('messages.Personal info updated successfully'),
             'user' => $request->user(),
         ]);
     }
@@ -49,7 +49,7 @@ class ProfileController extends Controller
         $user->delete();
 
         return response()->json([
-            'message' => 'Your account has been deleted successfully'
+            'message' => __('messages.Your account has been deleted successfully')
         ]);
     }
 
@@ -73,14 +73,14 @@ class ProfileController extends Controller
 
         UserAddress::create($data);
         return response()->json([
-            'message' => 'Address created successfully'
+            'message' => __('messages.Address created successfully')
         ], 201);
     }
 
     public function updateAddress(UserAddress $address, Request $request)
     {
         if ($address->user_id !== $request->user()?->id) {
-            return response()->json(['message' => 'Address not found for this user'], 404);
+            return response()->json(['message' => __('messages.Address not found for this user')], 404);
         }
 
         $data = $request->validate([
@@ -92,18 +92,18 @@ class ProfileController extends Controller
 
         $address->update($data);
         return response()->json([
-            'message' => 'Address updated successfully'
+            'message' => __('messages.Address updated successfully')
         ], 201);
     }
 
     public function deleteAddress(UserAddress $address, Request $request)
     {
         if ($address->user_id !== $request->user()?->id) {
-            return response()->json(['message' => 'Address not found for this user'], 404);
+            return response()->json(['message' => __('messages.Address not found for this user')], 404);
         }
         $address->delete();
         return response()->json([
-            'message' => 'Address deleted successfully'
+            'message' => __('messages.Address deleted successfully')
         ], 201);
     }
 
@@ -120,7 +120,7 @@ class ProfileController extends Controller
     public function cancelOrder(Order $order, Request $request)
     {
         if ($order->user_id !== $request->user()?->id) {
-            return response()->json(['message' => 'Order not found for this user'], 404);
+            return response()->json(['message' => __('messages.Order not found for this user')], 404);
         }
 
         $order->update([
@@ -128,7 +128,7 @@ class ProfileController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Order cancelled successfully'
+            'message' => __('messages.Order cancelled successfully')
         ], 201);
     }
 }

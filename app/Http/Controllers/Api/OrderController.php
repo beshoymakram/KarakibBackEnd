@@ -34,7 +34,7 @@ class OrderController extends Controller
             ->get();
 
         if ($cartItems->isEmpty()) {
-            return response()->json(['message' => 'Cart is empty'], 400);
+            return response()->json(['message' => __('messages.cart_empty')], 400);
         }
 
         $total = $cartItems->sum(function ($item) {
@@ -71,7 +71,7 @@ class OrderController extends Controller
                 DB::commit();
 
                 return response()->json([
-                    'message' => 'Order placed successfully (Cash on Delivery)',
+                    'message' => __('messages.order_placed_successfully'),
                     'order' => $order->load('items.product'),
                 ], 201);
             }
@@ -123,7 +123,7 @@ class OrderController extends Controller
         $orderNumber = $request->query('order_number');
 
         if (!$sessionId || !$orderNumber) {
-            return response()->json(['valid' => false, 'message' => 'Missing parameters'], 400);
+            return response()->json(['valid' => false, 'message' => __('messages.missing_parameters')], 400);
         }
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -134,7 +134,7 @@ class OrderController extends Controller
             $paid = $paymentStatus === 'paid';
 
             if (isset($session->metadata->order_number) && $session->metadata->order_number !== $orderNumber) {
-                return response()->json(['valid' => false, 'message' => 'Order mismatch'], 403);
+                return response()->json(['valid' => false, 'message' => __('messages.order_mismatch')], 403);
             }
 
             if ($paid) {
@@ -162,7 +162,7 @@ class OrderController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Order cancelled successfully'
+            'message' => __('messages.order_cancelled_successfully')
         ], 201);
     }
 
@@ -173,7 +173,7 @@ class OrderController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Order completeled successfully'
+            'message' => __('messages.order_completeled_successfully')
         ], 201);
     }
 }

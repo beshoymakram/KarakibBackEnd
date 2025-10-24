@@ -36,14 +36,14 @@ class PaymentController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Payment successful',
+                'message' => __('messages.payment_successful'),
                 'transaction' => $transaction
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Payment declined'
+            'message' => __('messages.payment_declined')
         ], 422);
     }
 

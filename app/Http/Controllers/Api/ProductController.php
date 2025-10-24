@@ -41,7 +41,7 @@ class ProductController extends Controller
         $product = Product::create($data);
 
         return response()->json([
-            'message' => 'Product created successfully',
+            'message' => __('messages.product_created_successfully'),
             'data' => $product
         ], 201);
     }
@@ -71,7 +71,7 @@ class ProductController extends Controller
         $product->update($data);
 
         return response()->json([
-            'message' => 'Product updated successfully',
+            'message' => __('messages.product_updated_successfully'),
             'data' => $product
         ]);
     }
@@ -87,7 +87,7 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json([
-            'message' => 'Product deleted successfully'
+            'message' => __('messages.product_deleted_successfully')
         ]);
     }
 }

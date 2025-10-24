@@ -17,7 +17,7 @@ class LoginController extends Controller
 
         if (!Auth::attempt($validated)) {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => __('messages.invalid_credentials')
             ], 401);
         }
 

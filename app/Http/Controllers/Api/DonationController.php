@@ -68,7 +68,7 @@ class DonationController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'Stripe checkout session created',
+                'message' => __('messages.stripe_session_created'),
                 'url' => $session->url,
                 'donation_id' => $donation->id,
             ], 201);
@@ -84,7 +84,7 @@ class DonationController extends Controller
         $donationNumber = $request->query('donation_number');
 
         if (!$sessionId || !$donationNumber) {
-            return response()->json(['valid' => false, 'message' => 'Missing parameters'], 400);
+            return response()->json(['valid' => false, 'message' => __('messages.missing_parameters')], 400);
         }
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -95,7 +95,7 @@ class DonationController extends Controller
             $paid = $paymentStatus === 'paid';
 
             if (isset($session->metadata->donation_number) && $session->metadata->donation_number !== $donationNumber) {
-                return response()->json(['valid' => false, 'message' => 'Order mismatch'], 403);
+                return response()->json(['valid' => false, 'message' => __('messages.order_mismatch')], 403);
             }
 
             if ($paid) {

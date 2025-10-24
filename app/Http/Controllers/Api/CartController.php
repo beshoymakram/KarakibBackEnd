@@ -57,7 +57,7 @@ class CartController extends Controller
         $product = Product::findOrFail($validated['product_id']);
 
         if ($product->stock < $validated['quantity']) {
-            return response()->json(['message' => 'Insufficient stock'], 400);
+            return response()->json(['message' => __('messages.insufficient_stock')], 400);
         }
 
         $user = auth('sanctum')->user();
@@ -75,13 +75,13 @@ class CartController extends Controller
             $newQuantity = $cartItem->quantity + $validated['quantity'];
 
             if ($product->stock < $newQuantity) {
-                return response()->json(['message' => 'Insufficient stock'], 400);
+                return response()->json(['message' => __('messages.insufficient_stock')], 400);
             }
 
             $cartItem->update(['quantity' => $newQuantity]);
         } else {
             if ($product->stock < $validated['quantity']) {
-                return response()->json(['message' => 'Insufficient stock'], 400);
+                return response()->json(['message' => __('messages.insufficient_stock')], 400);
             }
 
             $cartItem = CartItem::create([
@@ -93,7 +93,7 @@ class CartController extends Controller
         }
 
         return response()->json([
-            'message' => 'Item added to cart',
+            'message' => __('messages.added_to_cart'),
             'item' => $cartItem->fresh()->load('product')
         ])->cookie('cart_session', $sessionId, 60 * 24 * 30);
     }
@@ -112,13 +112,13 @@ class CartController extends Controller
             ->firstOrFail();
 
         if ($cartItem->product->stock < $validated['quantity']) {
-            return response()->json(['message' => 'Insufficient stock'], 400);
+            return response()->json(['message' => __('messages.insufficient_stock')], 400);
         }
 
         $cartItem->update(['quantity' => $validated['quantity']]);
 
         return response()->json([
-            'message' => 'Cart updated',
+            'message' => __('messages.cart_updated'),
             'item' => $cartItem->fresh()->load('product')
         ]);
     }
@@ -132,7 +132,7 @@ class CartController extends Controller
         CartItem::where('id', $id)
             ->forCart($user?->id, $sessionId)
             ->delete();
-        return response()->json(['message' => 'Item removed from cart']);
+        return response()->json(['message' => __('messages.item_removed')]);
     }
 
     public function clear(Request $request)
@@ -141,7 +141,7 @@ class CartController extends Controller
         $sessionId = $this->getSessionId($request);
 
         CartItem::forCart($user?->id, $sessionId)->delete();
-        return response()->json(['message' => 'Cart cleared']);
+        return response()->json(['message' => __('messages.cart_cleared')]);
     }
 
     // Merge guest cart to user cart on login
@@ -150,7 +150,7 @@ class CartController extends Controller
         $user = auth('sanctum')->user();
 
         if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => __('messages.unauthorized')], 401);
         }
 
         $sessionId = $this->getSessionId($request);
@@ -179,6 +179,6 @@ class CartController extends Controller
             }
         }
 
-        return response()->json(['message' => 'Cart merged successfully']);
+        return response()->json(['message' => __('messages.cart_merged')]);
     }
 }
