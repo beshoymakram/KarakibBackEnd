@@ -33,7 +33,7 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => false,
 
     'allowed_origins_patterns' => ['*'],
 

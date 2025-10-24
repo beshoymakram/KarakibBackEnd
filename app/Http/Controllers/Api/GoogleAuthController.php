@@ -41,6 +41,11 @@ class GoogleAuthController extends Controller
                         'google_id' => $googleUser->id,
                     ]);
                 }
+                $token = $user->createToken('auth-token')->plainTextToken;
+
+                return redirect()->to(
+                    env('FRONTEND_URL') . '/auth/callback?token=' . $token . '&user=' . urlencode(json_encode($user))
+                );
             } else {
                 // Create new user
                 $user = User::create([

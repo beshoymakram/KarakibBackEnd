@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\Welcome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -28,6 +29,8 @@ class RegisterController extends Controller
         ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
+
+        // $user->notify(new Welcome);
 
         return response()->json([
             'user' => $user,
