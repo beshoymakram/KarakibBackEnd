@@ -36,7 +36,7 @@ return [
     'category_updated_successfully' => 'Category updated successfully',
     'category_deleted_successfully' => 'Category deleted successfully',
     "Users registered with Google can't change their email." => "Users registered with Google can't change their email.",
-    "Personal_info_updated_successfully" => "Personal info updated successfully",
+    "Personal info updated successfully" => "Personal info updated successfully",
     "Your account has been deleted successfully" => "Your account has been deleted successfully",
     "Address created successfully" => "Address created successfully",
     "Address not found for this user" => "Address not found for this user",

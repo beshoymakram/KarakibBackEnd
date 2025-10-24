@@ -36,7 +36,7 @@ return [
     'category_updated_successfully' => 'تم تحديث الفئة بنجاح',
     'category_deleted_successfully' => 'تم حذف الفئة بنجاح',
     "Users registered with Google can't change their email." => "لا يمكن للمستخدمين المسجلين عبر جوجل تغيير بريدهم الإلكتروني.",
-    "Personal_info_updated_successfully" => "تم تحديث المعلومات الشخصية بنجاح",
+    "Personal info updated successfully" => "تم تحديث المعلومات الشخصية بنجاح",
     "Your account has been deleted successfully" => "تم حذف حسابك بنجاح",
     "Address created successfully" => "تم إنشاء العنوان بنجاح",
     "Address not found for this user" => "لم يتم العثور على العنوان لهذا المستخدم",
