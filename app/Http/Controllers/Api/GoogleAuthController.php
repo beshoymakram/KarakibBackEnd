@@ -34,18 +34,26 @@ class GoogleAuthController extends Controller
             // Find or create user
             $user = User::withTrashed()->where('email', $googleUser->email)->first();
 
+
             if ($user) {
+                if ($user->trashed()) {
+                    $user->restore();
+                    $user->status = 'active'; // Reset status
+                    $user->save();
+                }
+
                 // Update Google ID if not set
                 if (!$user->google_id) {
                     $user->update([
                         'google_id' => $googleUser->id,
                     ]);
                 }
-                $token = $user->createToken('auth-token')->plainTextToken;
 
-                return redirect()->to(
-                    env('FRONTEND_URL') . '/auth/callback?token=' . $token . '&user=' . urlencode(json_encode($user))
-                );
+                // Make sure user is active
+                if ($user->status === 'deleted') {
+                    $user->status = 'active';
+                    $user->save();
+                }
             } else {
                 // Create new user
                 $user = User::create([
