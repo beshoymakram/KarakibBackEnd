@@ -15,31 +15,35 @@ class ProfileController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
-            'phone' => 'required|string|unique:users,phone,' . auth()->user()->id,
+            'email' => 'required|email|unique:users,email,' . $request->user()->id,
+            'phone' => 'required|string|unique:users,phone,' . $request->user()->id,
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($request->hasFile('avatar')) {
-            if (auth()->user()->avatar && Storage::disk('public')->exists(auth()->user()->avatar)) {
-                Storage::disk('public')->delete(auth()->user()->avatar);
+            if ($request->user()->avatar && Storage::disk('public')->exists($request->user()->avatar)) {
+                Storage::disk('public')->delete($request->user()->avatar);
             }
 
             $avatarPath = $request->file('avatar')->store('avatars', 'public');
             $data['avatar'] = $avatarPath;
         }
 
-        auth()->user()->update($data);
+        if ($request->user()->google_id && ($data['email'] !== $request->user()->email)) {
+            return response()->json(['message' => "Users registered with google can't change their email."], 404);
+        }
+
+        $request->user()->update($data);
 
         return response()->json([
             'message' => 'Personal info updated successfully',
-            'user' => auth()->user(),
+            'user' => $request->user(),
         ]);
     }
 
     public function destroy()
     {
-        $user = auth()->user();
+        $user = $request->user();
         $user->status = 'deleted';
         $user->save();
         $user->delete();
