@@ -32,7 +32,7 @@ class GoogleAuthController extends Controller
             $googleUser = Socialite::driver('google')->user();
 
             // Find or create user
-            $user = User::where('email', $googleUser->email)->first();
+            $user = User::withTrashed()->where('email', $googleUser->email)->first();
 
             if ($user) {
                 // Update Google ID if not set
