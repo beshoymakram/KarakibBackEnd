@@ -43,6 +43,7 @@ return [
     "Address updated successfully" => "Address updated successfully",
     "Address deleted successfully" => "Address deleted successfully",
     "Order not found for this user" => "Order not found for this user",
-    "Order cancelled successfully" => "Order cancelled successfully"
+    "Order cancelled successfully" => "Order cancelled successfully",
+    "converted_successfully" => "Points converted successfully",
 
 ];

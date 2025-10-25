@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,6 +23,8 @@ class LoginController extends Controller
         }
 
         $user = Auth::user();
+        $user = User::with(['orders'])->find($user->id);
+
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([

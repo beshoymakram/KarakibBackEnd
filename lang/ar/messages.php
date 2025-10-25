@@ -43,5 +43,7 @@ return [
     "Address updated successfully" => "تم تحديث العنوان بنجاح",
     "Address deleted successfully" => "تم حذف العنوان بنجاح",
     "Order not found for this user" => "لم يتم العثور على الطلب لهذا المستخدم",
-    "Order cancelled successfully" => "تم إلغاء الطلب بنجاح"
+    "Order cancelled successfully" => "تم إلغاء الطلب بنجاح",
+    "converted_successfully" => "تم تحويل النقاط بنجاح",
+
 ];

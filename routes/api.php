@@ -107,7 +107,6 @@ Route::get('/verify-donation', [DonationController::class, 'verifyDonation']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/registerAdmin', [RegisterController::class, 'register'])->middleware('admin');
     Route::post('/logout', [LogoutController::class, 'logout']);
     Route::get('/user', fn(Request $request) => $request->user());
 
@@ -119,6 +118,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/profile/addresses/{address}', [ProfileController::class, 'deleteAddress']);
     Route::get('/profile/orders', [ProfileController::class, 'getOrders']);
     Route::put('/profile/orders/{order}/cancel', [ProfileController::class, 'cancelOrder']);
+    Route::get('/profile/points', [ProfileController::class, 'pointsHistory']);
 
     // Merge guest cart on login (protected)
     Route::post('/cart/merge', [CartController::class, 'merge']);
@@ -130,6 +130,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Your protected routes here
     Route::middleware('admin')->group(function () {
+        Route::post('/registerAdmin', [RegisterController::class, 'register']);
+
         Route::get('/donations', [DonationController::class, 'index']);
 
         Route::get('/orders', [OrderController::class, 'index']);

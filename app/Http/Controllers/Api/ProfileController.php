@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\PointHistory;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
@@ -130,5 +131,14 @@ class ProfileController extends Controller
         return response()->json([
             'message' => __('messages.Order cancelled successfully')
         ], 201);
+    }
+
+    public function pointsHistory(Request $request)
+    {
+        $history = PointHistory::where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($history);
     }
 }

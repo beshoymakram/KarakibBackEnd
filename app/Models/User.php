@@ -41,6 +41,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'type',
+        'google_id',
     ];
 
     /**
@@ -70,10 +72,51 @@ class User extends Authenticatable
     {
         $this->points += $points;
         $this->save();
+
+        // Record history
+        PointHistory::create([
+            'user_id' => $this->id,
+            'points' => $points,
+            'type' => 'earn',
+            'description' => $description
+        ]);
+    }
+
+    public function pointHistory()
+    {
+        return $this->hasMany(PointHistory::class);
+    }
+
+    public function convertPoints($points)
+    {
+        if ($points > $this->points) {
+            throw new \Exception('Insufficient points');
+        }
+
+        $rate = (1 / 19); // 1 point = 0.19 EGP
+        $cash = $points * $rate;
+
+        $this->points -= $points;
+        $this->balance += $cash;
+        $this->save();
+
+        PointHistory::create([
+            'user_id' => $this->id,
+            'points' => -$points,
+            'type' => 'convert',
+            'description' => "Converted {$points} points to {$cash} EGP"
+        ]);
+
+        return $cash;
     }
 
     public function addresses()
     {
         return $this->hasMany(UserAddress::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

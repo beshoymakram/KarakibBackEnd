@@ -28,6 +28,9 @@ class RegisterController extends Controller
             'type' => $validated['type'] ?? 'user',
         ]);
 
+        $user = User::with(['orders'])->find($user->id);
+
+
         $token = $user->createToken('auth-token')->plainTextToken;
 
         // $user->notify(new Welcome);
