@@ -42,7 +42,7 @@ class CartController extends Controller
         return response()->json([
             'items' => $cartItems,
             'products' => [
-                'items' => $productItems,
+                'items' => $productItems->values(),
                 'total' => $productItems->sum('subtotal'),
                 'count' => $productItems->sum('quantity')
             ],
