@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends BaseModel
 {
-    protected $fillable = ['user_id', 'session_id', 'product_id', 'quantity'];
-    protected $appends = ['subtotal'];
+    protected $fillable = ['user_id', 'session_id', 'cartable_type', 'cartable_id', 'quantity'];
+    protected $appends = ['subtotal', 'points'];
+
+    public function cartable()
+    {
+        return $this->morphTo();
+    }
 
     public function user()
     {
@@ -21,7 +26,17 @@ class CartItem extends BaseModel
 
     public function getSubtotalAttribute()
     {
-        return $this->quantity * $this->product->price;
+        // Products have prices, waste items have points
+        return $this->cartable instanceof Product
+            ? $this->cartable->price * $this->quantity
+            : 0;
+    }
+
+    public function getPointsAttribute()
+    {
+        return $this->cartable instanceof WasteItem
+            ? $this->cartable->points_per_unit * $this->quantity
+            : 0;
     }
 
     // Scope for getting cart by user or session

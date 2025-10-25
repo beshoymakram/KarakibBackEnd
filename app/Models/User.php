@@ -82,11 +82,6 @@ class User extends Authenticatable
         ]);
     }
 
-    public function pointHistory()
-    {
-        return $this->hasMany(PointHistory::class);
-    }
-
     public function convertPoints($points)
     {
         if ($points > $this->points) {
@@ -118,5 +113,10 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function pointHistory()
+    {
+        return $this->hasMany(PointHistory::class);
     }
 }
