@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\PointHistory;
+use App\Models\Request as ModelsRequest;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
@@ -118,6 +119,16 @@ class ProfileController extends Controller
         return response()->json($orders);
     }
 
+    public function getRequests(Request $request)
+    {
+        $requests = ModelsRequest::with(['items.item', 'user', 'address'])
+            ->where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($requests);
+    }
+
     public function cancelOrder(Order $order, Request $request)
     {
         if ($order->user_id !== $request->user()?->id) {
@@ -133,6 +144,21 @@ class ProfileController extends Controller
         ], 201);
     }
 
+    public function cancelRequest(ModelsRequest $request, Request $requestt)
+    {
+        if ($request->user_id !== $requestt->user()?->id) {
+            return response()->json(['message' => __('messages.Request not found for this user')], 404);
+        }
+
+        $request->update([
+            'status' => 'cancelled'
+        ]);
+
+        return response()->json([
+            'message' => __('messages.Request cancelled successfully')
+        ], 201);
+    }
+
     public function pointsHistory(Request $request)
     {
         $history = PointHistory::where('user_id', $request->user()->id)
@@ -140,5 +166,39 @@ class ProfileController extends Controller
             ->get();
 
         return response()->json($history);
+    }
+
+    public function convertPoints(Request $request)
+    {
+        $data = $request->validate([
+            'points' => 'required|integer|min:950|max:' . $request->user()->points,
+        ]);
+
+        if ($request->user()->points < $data['points']) {
+            return response()->json(['message' => __('messages.Insufficient points to convert')], 400);
+        }
+
+        $request->user()->convertPoints($data['points']);
+
+        return response()->json([
+            'message' => __('messages.Points converted successfully')
+        ], 201);
+    }
+
+    public function donatePoints(Request $request)
+    {
+        $data = $request->validate([
+            'points' => 'required|integer|min:1',
+        ]);
+
+        if ($request->user()->points < $data['points']) {
+            return response()->json(['message' => __('messages.Insufficient points to donate')], 400);
+        }
+
+        $request->user()->donatePoints($data['points']);
+
+        return response()->json([
+            'message' => __('messages.Points donated successfully')
+        ], 201);
     }
 }

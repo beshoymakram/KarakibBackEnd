@@ -23,7 +23,7 @@ class LoginController extends Controller
         }
 
         $user = Auth::user();
-        $user = User::with(['orders'])->find($user->id);
+        $user = User::with(['orders', 'requests'])->find($user->id);
 
         $token = $user->createToken('auth-token')->plainTextToken;
 

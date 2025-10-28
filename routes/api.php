@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminStatisticsController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\DonationController;
 use App\Http\Controllers\Api\GoogleAuthController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\WasteItemController;
 use App\Http\Controllers\Api\WasteTypeController;
 use App\Http\Controllers\Api\ProductsCategoryController;
+use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Models\ProductsCategory;
 use Illuminate\Http\Request;
@@ -119,17 +121,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile/orders', [ProfileController::class, 'getOrders']);
     Route::put('/profile/orders/{order}/cancel', [ProfileController::class, 'cancelOrder']);
     Route::get('/profile/points', [ProfileController::class, 'pointsHistory']);
+    Route::post('/profile/points/convert', [ProfileController::class, 'convertPoints']);
+    Route::post('/profile/points/donate', [ProfileController::class, 'donatePoints']);
+    Route::get('/profile/requests', [ProfileController::class, 'getRequests']);
+    Route::put('/profile/requests/{request}/cancel', [ProfileController::class, 'cancelRequest']);
 
     // Merge guest cart on login (protected)
     Route::post('/cart/merge', [CartController::class, 'merge']);
 
     // Orders
     Route::post('/checkout', [OrderController::class, 'checkout']);
+    Route::post('/collect', [RequestController::class, 'checkout']);
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
 
     // Your protected routes here
     Route::middleware('admin')->group(function () {
+        Route::get('/numbers', [AdminStatisticsController::class, 'index']);
+
         Route::post('/registerAdmin', [RegisterController::class, 'register']);
 
         Route::get('/donations', [DonationController::class, 'index']);
@@ -140,6 +149,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/orders/{category}', [OrderController::class, 'destroy']);
         Route::put('/orders/{order}/cancel', [OrderController::class, 'cancelOrder']);
         Route::put('/orders/{order}/complete', [OrderController::class, 'completeOrder']);
+
+        Route::get('/requests', [RequestController::class, 'index']);
+        Route::post('/requests', [RequestController::class, 'store']);
+        Route::put('/requests/{request}', [RequestController::class, 'update']);
+        Route::delete('/requests/{request}', [RequestController::class, 'destroy']);
+        Route::put('/requests/{request}/cancel', [RequestController::class, 'cancelRequest']);
+        Route::put('/requests/{request}/complete', [RequestController::class, 'completeRequest']);
 
         Route::post('/products-categories', [ProductsCategoryController::class, 'store']);
         Route::put('/products-categories/{category}', [ProductsCategoryController::class, 'update']);

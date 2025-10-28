@@ -75,7 +75,7 @@ class User extends Authenticatable
         // Record history
         PointHistory::create([
             'user_id' => $this->id,
-            'points' => $points,
+            'points' => +$points,
             'type' => 'earn',
             'description' => $description
         ]);
@@ -96,12 +96,29 @@ class User extends Authenticatable
 
         PointHistory::create([
             'user_id' => $this->id,
-            'points' => -$points,
+            'points' => $points,
             'type' => 'convert',
             'description' => "Converted {$points} points to {$cash} EGP"
         ]);
 
         return $cash;
+    }
+
+    public function donatePoints($points, $description = 'Donated points')
+    {
+        if ($points > $this->points) {
+            throw new \Exception('Insufficient points');
+        }
+
+        $this->points -= $points;
+        $this->save();
+
+        PointHistory::create([
+            'user_id' => $this->id,
+            'points' => $points,
+            'type' => 'donate',
+            'description' => $description
+        ]);
     }
 
     public function addresses()

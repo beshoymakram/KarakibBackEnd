@@ -23,12 +23,12 @@ class Order extends BaseModel
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function address()
     {
-        return $this->belongsTo(UserAddress::class, 'user_address_id');
+        return $this->belongsTo(UserAddress::class, 'user_address_id')->withTrashed();
     }
 
     public static function generateNumber()
@@ -38,6 +38,6 @@ class Order extends BaseModel
 
     public function items()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
 }
