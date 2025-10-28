@@ -131,6 +131,11 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function requests()
+    {
+        return $this->hasMany(Request::class);
+    }
+
     public function pointHistory()
     {
         return $this->hasMany(PointHistory::class);
