@@ -15,8 +15,11 @@ use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\WasteItemController;
 use App\Http\Controllers\Api\WasteTypeController;
 use App\Http\Controllers\Api\ProductsCategoryController;
+use App\Http\Controllers\Api\RegisterAdminController;
+use App\Http\Controllers\Api\RegisterCourierController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\StripeWebhookController;
+use App\Http\Controllers\Api\UserPasswordResetController;
 use App\Models\ProductsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -106,6 +109,9 @@ Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Route::get('/verify-payment', [OrderController::class, 'verifyPayment']);
 Route::get('/verify-donation', [DonationController::class, 'verifyDonation']);
 
+Route::post('/forgot-password', [UserPasswordResetController::class, 'send']);
+Route::post('/verify-code', [UserPasswordResetController::class, 'store']);
+Route::post('/reset-password', [UserPasswordResetController::class, 'update']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -139,7 +145,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/numbers', [AdminStatisticsController::class, 'index']);
 
-        Route::post('/registerAdmin', [RegisterController::class, 'register']);
+        Route::post('/registerAdmin', [RegisterAdminController::class, 'registerAdmin']);
+        Route::post('/registerCourier', [RegisterCourierController::class, 'registerCourier']);
 
         Route::get('/donations', [DonationController::class, 'index']);
 

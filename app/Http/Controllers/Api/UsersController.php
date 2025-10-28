@@ -28,7 +28,7 @@ class UsersController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'required|string|unique:users,phone,' . $user->id,
             'status' => 'sometimes|in:active,suspended',
-            'type' => 'sometimes|in:user,courier',
+            'type' => 'sometimes|in:user,courier,admin',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 

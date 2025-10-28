@@ -2,21 +2,24 @@
 
 namespace App\Notifications;
 
+use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class Welcome extends Notification implements ShouldQueue
+class OrderConfirmation extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    protected $order;
+
+    public function __construct($order)
     {
-        //
+        $this->order = $order;
     }
 
     /**
@@ -34,18 +37,12 @@ class Welcome extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $order = Order::where('id', $this->order->id)->first();
         return (new MailMessage)
-            ->from($address = 'info@karakib.netlify.com', $name = 'Karakib')
-            ->subject('Welcome to Karakib!')
-            ->view('emails.welcome', [
-                'user' => $notifiable,
+            ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
+            ->view('emails.order-confirmation', [
+                'order' => $order,
             ]);
-        // ->greeting("Dear " . $notifiable->name . ',')
-        // ->line('Thank you for selecting and supporting Karakib!')
-        // ->line('Your account is now active and you can start making money and save the enviroment as well.')
-        // ->line('For immediate queries connect with us on WhatsApp,')
-        // ->action('Get Started', env('FRONTEND_URL'))
-        // ->line('Feel free to reply to this email if you have any specific questions.');
     }
 
     /**

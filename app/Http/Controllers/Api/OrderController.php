@@ -7,6 +7,7 @@ use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Notifications\OrderConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
@@ -85,6 +86,9 @@ class OrderController extends Controller
             if ($validated['payment_method'] === 'cash') {
                 DB::commit();
 
+                $request->user()->notify(new OrderConfirmation($order));
+
+
                 return response()->json([
                     'message' => __('messages.order_placed_successfully'),
                     'order' => $order->load('items.product'),
@@ -120,6 +124,7 @@ class OrderController extends Controller
             ]);
 
             DB::commit();
+            $request->user()->notify(new OrderConfirmation($order));
 
             return response()->json([
                 'message' => 'Stripe checkout session created',

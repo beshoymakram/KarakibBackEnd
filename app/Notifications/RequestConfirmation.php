@@ -2,21 +2,25 @@
 
 namespace App\Notifications;
 
+use App\Models\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class Welcome extends Notification implements ShouldQueue
+class RequestConfirmation extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+
+    protected $request;
+
+    public function __construct($request)
     {
-        //
+        $this->request = $request;
     }
 
     /**
@@ -34,18 +38,13 @@ class Welcome extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $request = Request::where('id', $this->request->id)->first();
+
         return (new MailMessage)
-            ->from($address = 'info@karakib.netlify.com', $name = 'Karakib')
-            ->subject('Welcome to Karakib!')
-            ->view('emails.welcome', [
-                'user' => $notifiable,
+            ->subject('Waste Collection Scheduled #' . $this->request->request_number . ' - Karakib')
+            ->view('emails.request-confirmation', [
+                'request' => $this->request,
             ]);
-        // ->greeting("Dear " . $notifiable->name . ',')
-        // ->line('Thank you for selecting and supporting Karakib!')
-        // ->line('Your account is now active and you can start making money and save the enviroment as well.')
-        // ->line('For immediate queries connect with us on WhatsApp,')
-        // ->action('Get Started', env('FRONTEND_URL'))
-        // ->line('Feel free to reply to this email if you have any specific questions.');
     }
 
     /**

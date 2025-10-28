@@ -15,7 +15,7 @@ class RegisterAdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'phone' => 'required|string|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
@@ -27,7 +27,7 @@ class RegisterAdminController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Admin created successfully',
+            'message' => __('messages.admin_added_successfully'),
             'user' => $user
         ], 201);
     }

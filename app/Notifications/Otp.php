@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class Welcome extends Notification implements ShouldQueue
+class Otp extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -35,17 +35,18 @@ class Welcome extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->from($address = 'info@karakib.netlify.com', $name = 'Karakib')
-            ->subject('Welcome to Karakib!')
-            ->view('emails.welcome', [
+            ->subject('Reset Your Karakib Password')
+            ->view('emails.otp', [
                 'user' => $notifiable,
+                'otp' => $notifiable->otp,
+                'expiresAt' => $notifiable->otp_expired_at->format('h:i A')
             ]);
-        // ->greeting("Dear " . $notifiable->name . ',')
-        // ->line('Thank you for selecting and supporting Karakib!')
-        // ->line('Your account is now active and you can start making money and save the enviroment as well.')
-        // ->line('For immediate queries connect with us on WhatsApp,')
-        // ->action('Get Started', env('FRONTEND_URL'))
-        // ->line('Feel free to reply to this email if you have any specific questions.');
+        // ->subject('Karakib | Your OTP Code')
+        // ->greeting("Hello " . $notifiable->name . '!')
+        // ->line('Your OTP Code is : **' . $notifiable->otp . '**')
+        // ->action('Verify', env('FRONTEND_URL') . '/verify-code?email=' . $notifiable->email)
+        // ->line('Code expires after 10 minutes.')
+        // ->line("If you don't recognize this action, kindly change your password and contact the developer ASAP.");
     }
 
     /**

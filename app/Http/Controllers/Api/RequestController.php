@@ -7,6 +7,7 @@ use App\Models\CartItem;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestItem;
 use App\Models\WasteItem;
+use App\Notifications\RequestConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -77,6 +78,7 @@ class RequestController extends Controller
                 ->delete();
 
             DB::commit();
+            $request->user()->notify(new RequestConfirmation($order));
 
             return response()->json([
                 'message' => __('messages.request_placed_successfully'),

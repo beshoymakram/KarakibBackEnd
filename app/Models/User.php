@@ -30,7 +30,9 @@ class User extends Authenticatable
         'points',
         'balance',
         'google_id',
-        'email_verified_at'
+        'email_verified_at',
+        'otp',
+        'otp_expired_at',
     ];
 
     /**
@@ -54,6 +56,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'otp_expired_at' => 'datetime',
+
         ];
     }
 
@@ -119,6 +123,22 @@ class User extends Authenticatable
             'type' => 'donate',
             'description' => $description
         ]);
+    }
+
+    public function generateOtp()
+    {
+        $this->timestamps = false;
+        $this->otp = rand(10000, 90000);
+        $this->otp_expired_at = now()->addMinutes(10);
+        $this->save();
+    }
+
+    public function resetOtp()
+    {
+        $this->timestamps = false;
+        $this->otp = null;
+        $this->otp_expired_at = null;
+        $this->save();
     }
 
     public function addresses()

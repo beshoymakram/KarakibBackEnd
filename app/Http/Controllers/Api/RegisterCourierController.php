@@ -4,20 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Notifications\Welcome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterController extends Controller
+class RegisterCourierController extends Controller
 {
-    public function register(Request $request)
+    public function registerCourier(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'phone' => 'required|string|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'type' => 'sometimes|in:user,courier'
+            'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
@@ -25,19 +23,12 @@ class RegisterController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
-            'type' => $validated['type'] ?? 'user',
+            'type' => 'courier',
         ]);
 
-        $user = User::with(['orders'])->find($user->id);
-
-
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-        $user->notify(new Welcome);
-
         return response()->json([
-            'user' => $user,
-            'token' => $token
+            'message' => __('messages.courier_added_successfully'),
+            'user' => $user
         ], 201);
     }
 }
