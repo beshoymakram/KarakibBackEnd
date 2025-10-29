@@ -35,7 +35,6 @@ class Welcome extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->from($address = 'info@karakib.netlify.com', $name = 'Karakib')
             ->subject('Welcome to Karakib!')
             ->view('emails.welcome', [
                 'user' => $notifiable,
