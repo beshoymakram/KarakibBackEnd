@@ -43,7 +43,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function destroy()
+    public function destroy(Request $request)
     {
         $user = $request->user();
         $user->status = 'deleted';

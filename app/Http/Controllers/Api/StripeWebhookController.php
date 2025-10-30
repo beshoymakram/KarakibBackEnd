@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Donation;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
@@ -37,6 +38,15 @@ class StripeWebhookController extends Controller
                 $order = Order::where('order_number', $orderNumber)->first();
                 if ($order) {
                     $order->update(['status' => 'completed']);
+                }
+            }
+
+            $donationNumber = $session->metadata->donation_number ?? null;
+
+            if ($donationNumber) {
+                $donation = Donation::where('donation_number', $donationNumber)->first();
+                if ($donation) {
+                    $donation->update(['status' => 'completed']);
                 }
             }
         }
