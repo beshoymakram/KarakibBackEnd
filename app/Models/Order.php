@@ -13,17 +13,42 @@ class Order extends BaseModel
         'stripe_session_id',
         'stripe_payment_intent_id',
         'total',
+        'courier_id',
+        'collected_at',
         'status',
         'payment_method'
     ];
 
     protected $casts = [
         'total' => 'decimal:2',
+        'collected_at' => 'datetime',
+
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class)->withTrashed();
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
+    }
+
+    public function courier()
+    {
+        return $this->belongsTo(User::class, 'courier_id')->withTrashed();
+    }
+
+    public function assignCourier($courierId)
+    {
+        $this->update([
+            'courier_id' => $courierId,
+            'status' => 'assigned',
+        ]);
+    }
+
+    public function unassignCourier()
+    {
+        $this->update([
+            'courier_id' => null,
+            'status' => 'pending',
+        ]);
     }
 
     public function address()

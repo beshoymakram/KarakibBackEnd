@@ -153,7 +153,17 @@ class User extends Authenticatable
 
     public function requests()
     {
-        return $this->hasMany(Request::class);
+        return $this->hasMany(Request::class, 'user_id');
+    }
+
+    public function assignedRequests()
+    {
+        return $this->hasMany(Request::class, 'courier_id');
+    }
+
+    public function courierAssignments()
+    {
+        return $this->hasMany(CourierRequest::class, 'courier_id');
     }
 
     public function pointHistory()

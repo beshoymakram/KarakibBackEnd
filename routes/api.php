@@ -156,6 +156,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/orders/{category}', [OrderController::class, 'destroy']);
         Route::put('/orders/{order}/cancel', [OrderController::class, 'cancelOrder']);
         Route::put('/orders/{order}/complete', [OrderController::class, 'completeOrder']);
+        Route::post('/orders/{order}/assign/{courier}', [OrderController::class, 'assignOrder']);
+        Route::post('/orders/{order}/unassign', [OrderController::class, 'unassignOrder']);
 
         Route::get('/requests', [RequestController::class, 'index']);
         Route::post('/requests', [RequestController::class, 'store']);
@@ -181,6 +183,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/waste-items/{id}', [WasteItemController::class, 'destroy']);
 
         Route::get('/users', [UsersController::class, 'index']);
+        Route::get('/users/couriers', [UsersController::class, 'getCouriers']);
         Route::put('/users/{user}', [UsersController::class, 'update']);
 
         Route::delete('/users/{user}', [UsersController::class, 'destroy']);

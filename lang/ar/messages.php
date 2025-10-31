@@ -60,5 +60,8 @@ return [
     "Request cancelled successfully" => "تم إلغاء الطلب بنجاح",
     "Order cancelled successfully" => "تم إلغاء الطلب بنجاح",
     "converted_successfully" => "تم تحويل النقاط بنجاح",
+    "order_assigned_to_courier" => "تم تعيين الطلب علي المندوب",
+    "order_unassigned" => "تم الغاء التعيين",
+    "order_completed_successfully" => "تم اكمال الطلب بنجاح"
 
 ];

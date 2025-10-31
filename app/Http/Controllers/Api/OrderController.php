@@ -7,6 +7,7 @@ use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\User;
 use App\Notifications\OrderConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with(['items.product', 'user', 'address'])
+        $orders = Order::with(['items.product', 'user', 'address', 'courier'])
             ->orderBy('created_at', 'desc')
             ->get();
         return response()->json($orders);
@@ -194,6 +195,28 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => __('messages.order_completed_successfully')
+        ], 201);
+    }
+
+    public function assignOrder(Order $order, User $courier)
+    {
+        if ($courier->type !== 'courier') {
+            return response()->json(['message' => __('messages.unauthorized')], 401);
+        }
+
+        $order->assignCourier($courier->id);
+
+        return response()->json([
+            'message' => __('messages.order_assigned_to_courier')
+        ], 201);
+    }
+
+    public function unassignOrder(Order $order)
+    {
+        $order->unassignCourier();
+
+        return response()->json([
+            'message' => __('messages.order_unassigned')
         ], 201);
     }
 }

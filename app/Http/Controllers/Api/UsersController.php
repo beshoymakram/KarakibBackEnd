@@ -21,6 +21,17 @@ class UsersController extends Controller
         return response()->json($users);
     }
 
+    public function getCouriers()
+    {
+        if (auth()->user()) {
+            $couriers = User::withTrashed()->where('id', '!=', auth()->user()->id)->where('type', 'courier')->get();
+        } else {
+            $couriers = User::withTrashed()->where('type', 'courier')->get();
+        }
+
+        return response()->json($couriers);
+    }
+
     public function update(User $user, Request $request)
     {
         $data = $request->validate([

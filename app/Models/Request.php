@@ -36,4 +36,20 @@ class Request extends BaseModel
     {
         return $this->hasMany(RequestItem::class);
     }
+
+    public function courier()
+    {
+        return $this->belongsTo(User::class)->withTrashed();
+    }
+
+    public function assignCourier($courierId)
+    {
+        CourierRequest::create([
+            'request_id' => $this->id,
+            'courier_id' => $courierId,
+            'status' => 'assigned'
+        ]);
+
+        $this->update(['status' => 'assigned']);
+    }
 }
