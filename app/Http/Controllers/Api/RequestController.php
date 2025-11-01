@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestItem;
+use App\Models\User;
 use App\Models\WasteItem;
 use App\Notifications\RequestConfirmation;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class RequestController extends Controller
 {
     public function index()
     {
-        $requests = ModelsRequest::with(['items.item', 'user', 'address'])
+        $requests = ModelsRequest::with(['items.item', 'user', 'address', 'courier'])
             ->orderBy('created_at', 'desc')
             ->get();
         return response()->json($requests);
@@ -117,5 +118,41 @@ class RequestController extends Controller
         return response()->json([
             'message' => __('messages.request_completed_successfully')
         ], 201);
+    }
+
+    public function assignRequest(ModelsRequest $request, User $courier)
+    {
+        if ($courier->type !== 'courier') {
+            return response()->json(['message' => __('messages.unauthorized')], 401);
+        }
+
+        $request->assignCourier($courier->id);
+
+        return response()->json([
+            'message' => __('messages.order_assigned_to_courier')
+        ], 201);
+    }
+
+    public function unassignRequest(ModelsRequest $request)
+    {
+        $request->unassignCourier();
+
+        return response()->json([
+            'message' => __('messages.order_unassigned')
+        ], 201);
+    }
+
+    public function getAssignedRequests(Request $request)
+    {
+        if ($request->user()->type !== 'courier') {
+            return response()->json(['message' => __('messages.unauthorized')], 401);
+        }
+
+        $requests = ModelsRequest::with(['items.item', 'user', 'address'])
+            ->where('courier_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($requests);
     }
 }

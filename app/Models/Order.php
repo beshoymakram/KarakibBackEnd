@@ -45,10 +45,17 @@ class Order extends BaseModel
 
     public function unassignCourier()
     {
-        $this->update([
-            'courier_id' => null,
-            'status' => 'pending',
-        ]);
+        if ($this->status !== 'paid') {
+            $this->update([
+                'courier_id' => null,
+                'status' => 'pending',
+            ]);
+        } else {
+            $this->update([
+                'courier_id' => null,
+                'status' => 'paid',
+            ]);
+        }
     }
 
     public function address()

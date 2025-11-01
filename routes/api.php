@@ -165,6 +165,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/requests/{request}', [RequestController::class, 'destroy']);
         Route::put('/requests/{request}/cancel', [RequestController::class, 'cancelRequest']);
         Route::put('/requests/{request}/complete', [RequestController::class, 'completeRequest']);
+        Route::post('/requests/{request}/assign/{courier}', [RequestController::class, 'assignRequest']);
+        Route::post('/requests/{request}/unassign', [RequestController::class, 'unassignRequest']);
+
 
         Route::post('/products-categories', [ProductsCategoryController::class, 'store']);
         Route::put('/products-categories/{category}', [ProductsCategoryController::class, 'update']);
@@ -187,5 +190,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/users/{user}', [UsersController::class, 'update']);
 
         Route::delete('/users/{user}', [UsersController::class, 'destroy']);
+    });
+    Route::middleware('courier')->group(function () {
+        Route::get('/assigned-requests', [RequestController::class, 'getAssignedRequests']);
     });
 });

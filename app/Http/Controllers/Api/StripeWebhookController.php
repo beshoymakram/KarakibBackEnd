@@ -37,7 +37,7 @@ class StripeWebhookController extends Controller
             if ($orderNumber) {
                 $order = Order::where('order_number', $orderNumber)->first();
                 if ($order) {
-                    $order->update(['status' => 'completed']);
+                    $order->update(['status' => 'paid']);
                 }
             }
 

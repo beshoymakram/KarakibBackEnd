@@ -10,7 +10,9 @@ class Request extends BaseModel
         'user_address_id',
         'total',
         'status',
-        'payout_method'
+        'payout_method',
+        'courier_id',
+        'collected_at',
     ];
 
     protected $casts = [
@@ -39,17 +41,22 @@ class Request extends BaseModel
 
     public function courier()
     {
-        return $this->belongsTo(User::class)->withTrashed();
+        return $this->belongsTo(User::class, 'courier_id')->withTrashed();
     }
 
     public function assignCourier($courierId)
     {
-        CourierRequest::create([
-            'request_id' => $this->id,
+        $this->update([
             'courier_id' => $courierId,
-            'status' => 'assigned'
+            'status' => 'assigned',
         ]);
+    }
 
-        $this->update(['status' => 'assigned']);
+    public function unassignCourier()
+    {
+        $this->update([
+            'courier_id' => null,
+            'status' => 'pending',
+        ]);
     }
 }
