@@ -75,7 +75,7 @@ class QrCodeService
         } catch (\Exception $e) {
             return [
                 'valid' => false,
-                'message' => 'Invalid QR code'
+                'message' => $e
             ];
         }
     }
