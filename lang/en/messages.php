@@ -63,6 +63,10 @@ return [
     "order_assigned_to_courier" => "Order assigned to courier",
     "order_unassigned" => "Order unassigned",
     "order_completed_successfully" => "Order completed successfully",
-    "your_account_has_been_deleted" => "Your account has been deleted."
+    "your_account_has_been_deleted" => "Your account has been deleted.",
+    'wrong_order_qr' => 'This QR code does not match the selected order',
+    'order_not_assigned_to_you' => 'This order is not assigned to you',
+    'order_already_collected' => 'This order has already been collected',
+    'order_collected_successfully' => 'Order collected successfully',
 
 ];

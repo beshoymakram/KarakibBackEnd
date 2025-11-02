@@ -273,7 +273,8 @@ class OrderController extends Controller
 
         // Mark as collected
         $order->update([
-            'status' => 'collected'
+            'status' => 'collected',
+            'collected_at' => now(),
         ]);
 
         return response()->json([

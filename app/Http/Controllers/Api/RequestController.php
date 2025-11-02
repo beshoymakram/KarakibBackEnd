@@ -150,7 +150,8 @@ class RequestController extends Controller
     public function scanQrCode(Request $request)
     {
         $validated = $request->validate([
-            'qr_token' => 'required|string'
+            'qr_token' => 'required|string',
+            'request_id' => 'required|integer'
         ]);
 
         $courier = $request->user();
@@ -167,6 +168,13 @@ class RequestController extends Controller
 
         $data = $verification['data'];
 
+        if ($data['id'] != $validated['request_id']) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.wrong_order_qr')
+            ], 400);
+        }
+
         // Find the order
         $order = ModelsRequest::where('id', $data['id'])
             ->where('request_number', $data['number'])
@@ -177,6 +185,13 @@ class RequestController extends Controller
                 'success' => false,
                 'message' => __('messages.order_not_found')
             ], 404);
+        }
+
+        if ($order->courier_id && $order->courier_id != $courier->id) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.order_not_assigned_to_you')
+            ], 403);
         }
 
         // Check if already collected
@@ -197,7 +212,8 @@ class RequestController extends Controller
 
         // Mark as collected
         $order->update([
-            'status' => 'collected'
+            'status' => 'collected',
+            'collected_at' => now(),
         ]);
 
         return response()->json([

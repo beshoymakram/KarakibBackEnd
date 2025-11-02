@@ -63,6 +63,10 @@ return [
     "order_assigned_to_courier" => "تم تعيين الطلب علي المندوب",
     "order_unassigned" => "تم الغاء التعيين",
     "order_completed_successfully" => "تم اكمال الطلب بنجاح",
-    "your_account_has_been_deleted" => "لقد تم حذف حسابك."
+    "your_account_has_been_deleted" => "لقد تم حذف حسابك.",
+    'wrong_order_qr' => 'الكود غير مطابق للطلب',
+    'order_not_assigned_to_you' => 'هذا الطلب غير معين لك',
+    'order_already_collected' => 'تم استلام الطلب بالفعل',
+    'order_collected_successfully' => 'تم استلام الطلب بنجاح',
 
 ];
