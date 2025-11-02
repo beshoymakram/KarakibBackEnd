@@ -199,5 +199,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/orders/scan-qr', [OrderController::class, 'scanQrCode']);
         Route::post('/orders/verify-qr', [OrderController::class, 'getOrderByQr']);
+
+        Route::post('/requests/scan-qr', [RequestController::class, 'scanQrCode']);
+        Route::post('/requests/verify-qr', [RequestController::class, 'getOrderByQr']);
     });
 });

@@ -203,7 +203,7 @@ class RequestController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('messages.order_collected_successfully'),
-            'order' => $order->load(['user', 'items.product', 'address'])
+            'order' => $order->load(['user', 'items.item', 'address'])
         ]);
     }
 
@@ -226,7 +226,7 @@ class RequestController extends Controller
         }
 
         $data = $verification['data'];
-        $order = ModelsRequest::with(['user', 'items.product', 'address'])
+        $order = ModelsRequest::with(['user', 'items.item', 'address'])
             ->where('id', $data['id'])
             ->first();
 
