@@ -9,6 +9,7 @@ use App\Models\RequestItem;
 use App\Models\User;
 use App\Models\WasteItem;
 use App\Notifications\RequestConfirmation;
+use App\Services\QrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -61,6 +62,9 @@ class RequestController extends Controller
                 'status' => 'pending'
             ]);
 
+            $qrToken = QrCodeService::generateToken($order);
+
+
             foreach ($cartItems as $cartItem) {
                 RequestItem::create([
                     'request_id' => $order->id,
@@ -79,7 +83,7 @@ class RequestController extends Controller
                 ->delete();
 
             DB::commit();
-            $request->user()->notify(new RequestConfirmation($order));
+            $request->user()->notify(new RequestConfirmation($order->fresh()));
 
             return response()->json([
                 'message' => __('messages.request_placed_successfully'),
