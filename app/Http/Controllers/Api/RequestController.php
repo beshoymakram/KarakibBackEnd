@@ -63,7 +63,7 @@ class RequestController extends Controller
             ]);
 
             $qrToken = QrCodeService::generateToken($order);
-
+            $order->update(['qr_code' => $qrToken]);
 
             foreach ($cartItems as $cartItem) {
                 RequestItem::create([
