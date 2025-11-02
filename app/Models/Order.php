@@ -16,6 +16,7 @@ class Order extends BaseModel
         'courier_id',
         'collected_at',
         'status',
+        'qr_code',
         'payment_method'
     ];
 

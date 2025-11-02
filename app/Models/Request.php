@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\QrCodeService;
+
 class Request extends BaseModel
 {
     protected $fillable = [
@@ -12,6 +14,7 @@ class Request extends BaseModel
         'status',
         'payout_method',
         'courier_id',
+        'qr_code',
         'collected_at',
     ];
 
@@ -58,5 +61,14 @@ class Request extends BaseModel
             'courier_id' => null,
             'status' => 'pending',
         ]);
+    }
+
+    public function getQrCodeImageAttribute()
+    {
+        if (!$this->qr_code) {
+            return null;
+        }
+
+        return QrCodeService::getQrCodeDataUrl($this->qr_code);
     }
 }

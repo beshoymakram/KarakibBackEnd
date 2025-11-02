@@ -62,6 +62,7 @@ return [
     "converted_successfully" => "Points converted successfully",
     "order_assigned_to_courier" => "Order assigned to courier",
     "order_unassigned" => "Order unassigned",
-    "order_completed_successfully" => "Order completed successfully"
+    "order_completed_successfully" => "Order completed successfully",
+    "your_account_has_been_deleted" => "Your account has been deleted."
 
 ];

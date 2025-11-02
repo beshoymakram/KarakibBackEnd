@@ -20,6 +20,8 @@ use App\Http\Controllers\Api\RegisterCourierController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\UserPasswordResetController;
+use App\Http\Controllers\CourierController;
+use App\Models\CourierRequest;
 use App\Models\ProductsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -116,7 +118,7 @@ Route::post('/reset-password', [UserPasswordResetController::class, 'update']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [LogoutController::class, 'logout']);
-    Route::get('/user', fn(Request $request) => $request->user());
+    Route::get('/user', fn(Request $request) => $request->user()->load('orders', 'requests'));
 
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::delete('/profile/destroy', [ProfileController::class, 'destroy']);
@@ -192,6 +194,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/users/{user}', [UsersController::class, 'destroy']);
     });
     Route::middleware('courier')->group(function () {
-        Route::get('/assigned-requests', [RequestController::class, 'getAssignedRequests']);
+        Route::get('/assigned-requests', [CourierController::class, 'getAssignedRequests']);
+        Route::get('/assigned-orders', [CourierController::class, 'getAssignedOrders']);
     });
 });

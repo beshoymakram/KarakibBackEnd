@@ -302,7 +302,7 @@
             <div class="qr-container">
                 <div class="qr-title">🔍 Show This QR Code to Courier</div>
                 <div class="qr-code">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ urlencode('KARAKIB-REQUEST-' . $request->request_number . '-' . $request->user->id) }}" alt="Collection QR Code">
+                    <img src="{{ $request->qr_code_image }}" alt="Collection QR Code">
                 </div>
                 <div class="request-id">Request ID: #{{ $request->request_number }}</div>
                 <div class="qr-instruction">

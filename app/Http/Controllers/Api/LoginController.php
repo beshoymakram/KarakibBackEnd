@@ -25,6 +25,12 @@ class LoginController extends Controller
         $user = Auth::user();
         $user = User::with(['orders', 'requests'])->find($user->id);
 
+        if ($user->trashed()) {
+            return response()->json([
+                'message' => __('messages.your_account_has_been_deleted')
+            ], 403);
+        }
+
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([

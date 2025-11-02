@@ -62,6 +62,7 @@ return [
     "converted_successfully" => "تم تحويل النقاط بنجاح",
     "order_assigned_to_courier" => "تم تعيين الطلب علي المندوب",
     "order_unassigned" => "تم الغاء التعيين",
-    "order_completed_successfully" => "تم اكمال الطلب بنجاح"
+    "order_completed_successfully" => "تم اكمال الطلب بنجاح",
+    "your_account_has_been_deleted" => "لقد تم حذف حسابك."
 
 ];

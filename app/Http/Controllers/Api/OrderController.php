@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use App\Notifications\OrderConfirmation;
+use App\Services\QrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
@@ -62,6 +63,9 @@ class OrderController extends Controller
                 'user_address_id' => $validated['user_address_id'],
                 'status' => 'pending'
             ]);
+
+            $qrToken = QrCodeService::generateToken($order);
+            $order->update(['qr_code' => $qrToken]);
 
             foreach ($cartItems as $cartItem) {
                 OrderItem::create([
@@ -125,8 +129,7 @@ class OrderController extends Controller
             ]);
 
             DB::commit();
-            $request->user()->notify(new OrderConfirmation($order));
-
+            $request->user()->notify(new OrderConfirmation($order->fresh()));
             return response()->json([
                 'message' => 'Stripe checkout session created',
                 'url' => $session->url,

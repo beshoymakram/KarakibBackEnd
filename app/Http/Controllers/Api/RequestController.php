@@ -141,18 +141,4 @@ class RequestController extends Controller
             'message' => __('messages.order_unassigned')
         ], 201);
     }
-
-    public function getAssignedRequests(Request $request)
-    {
-        if ($request->user()->type !== 'courier') {
-            return response()->json(['message' => __('messages.unauthorized')], 401);
-        }
-
-        $requests = ModelsRequest::with(['items.item', 'user', 'address'])
-            ->where('courier_id', $request->user()->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json($requests);
-    }
 }
