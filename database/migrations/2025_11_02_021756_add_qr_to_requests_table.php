@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('requests', function (Blueprint $table) {
-            $table->string('qr_code')->unique()->nullable()->after('courier_id');
+            $table->text('qr_code')->unique()->nullable()->after('courier_id');
         });
     }
 
