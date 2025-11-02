@@ -196,5 +196,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('courier')->group(function () {
         Route::get('/assigned-requests', [CourierController::class, 'getAssignedRequests']);
         Route::get('/assigned-orders', [CourierController::class, 'getAssignedOrders']);
+
+        Route::post('/orders/scan-qr', [OrderController::class, 'scanQrCode']);
+        Route::post('/orders/verify-qr', [OrderController::class, 'getOrderByQr']);
     });
 });

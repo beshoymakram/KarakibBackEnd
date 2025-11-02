@@ -222,4 +222,100 @@ class OrderController extends Controller
             'message' => __('messages.order_unassigned')
         ], 201);
     }
+
+    public function scanQrCode(Request $request)
+    {
+        $validated = $request->validate([
+            'qr_token' => 'required|string'
+        ]);
+
+        $courier = $request->user();
+
+        // Verify QR token
+        $verification = QrCodeService::verifyToken($validated['qr_token']);
+
+        if (!$verification['valid']) {
+            return response()->json([
+                'success' => false,
+                'message' => $verification['message']
+            ], 400);
+        }
+
+        $data = $verification['data'];
+
+        // Find the order
+        $order = Order::where('id', $data['id'])
+            ->where('order_number', $data['number'])
+            ->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.order_not_found')
+            ], 404);
+        }
+
+        // Check if already collected
+        if ($order->status === 'collected') {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.order_already_collected')
+            ], 400);
+        }
+
+        // Check if already collected
+        if ($order->status === 'cancelled') {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.order_already_cancelled')
+            ], 400);
+        }
+
+        // Mark as collected
+        $order->update([
+            'status' => 'collected'
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.order_collected_successfully'),
+            'order' => $order->load(['user', 'items.product', 'address'])
+        ]);
+    }
+
+    /**
+     * Get order details by QR
+     */
+    public function getOrderByQr(Request $request)
+    {
+        $validated = $request->validate([
+            'qr_token' => 'required|string'
+        ]);
+
+        $verification = QrCodeService::verifyToken($validated['qr_token']);
+
+        if (!$verification['valid']) {
+            return response()->json([
+                'success' => false,
+                'message' => $verification['message']
+            ], 400);
+        }
+
+        $data = $verification['data'];
+        $order = Order::with(['user', 'items.product', 'address'])
+            ->where('id', $data['id'])
+            ->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.order_not_found')
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'order' => $order
+        ]);
+    }
 }
