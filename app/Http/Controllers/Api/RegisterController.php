@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\User;
 use App\Notifications\Welcome;
 use Illuminate\Http\Request;
@@ -34,6 +35,12 @@ class RegisterController extends Controller
         $token = $user->createToken('auth-token')->plainTextToken;
 
         $user->notify(new Welcome);
+
+        Notification::create([
+            'user_id' => $user->id,
+            'content' => 'welcome_to_karakib',
+            'icon' => 'https://www.svgrepo.com/show/142449/happy-face.svg',
+        ]);
 
         return response()->json([
             'user' => $user,

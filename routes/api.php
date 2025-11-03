@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\UserPasswordResetController;
 use App\Http\Controllers\CourierController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Models\CourierRequest;
 use App\Models\ProductsCategory;
 use Illuminate\Http\Request;
@@ -118,7 +119,7 @@ Route::post('/reset-password', [UserPasswordResetController::class, 'update']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [LogoutController::class, 'logout']);
-    Route::get('/user', fn(Request $request) => $request->user()->load('orders', 'requests'));
+    Route::get('/user', fn(Request $request) => $request->user()->load('orders', 'requests', 'notifications'));
 
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::delete('/profile/destroy', [ProfileController::class, 'destroy']);
@@ -133,6 +134,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/points/donate', [ProfileController::class, 'donatePoints']);
     Route::get('/profile/requests', [ProfileController::class, 'getRequests']);
     Route::put('/profile/requests/{request}/cancel', [ProfileController::class, 'cancelRequest']);
+    Route::get('/profile/notifications', [NotificationController::class, 'index']);
+    Route::post('/profile/notifications/read', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/profile/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
 
     // Merge guest cart on login (protected)
     Route::post('/cart/merge', [CartController::class, 'merge']);

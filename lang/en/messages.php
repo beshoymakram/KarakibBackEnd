@@ -68,5 +68,8 @@ return [
     'order_not_assigned_to_you' => 'This order is not assigned to you',
     'order_already_collected' => 'This order has already been collected',
     'order_collected_successfully' => 'Order collected successfully',
+    'welcome_to_karakib' => 'Welcome to karakib!',
+    'marked_as_read' => 'Marked as read',
+    'marked_all_as_read' => 'Marked all as read'
 
 ];

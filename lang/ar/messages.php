@@ -68,5 +68,8 @@ return [
     'order_not_assigned_to_you' => 'هذا الطلب غير معين لك',
     'order_already_collected' => 'تم استلام الطلب بالفعل',
     'order_collected_successfully' => 'تم استلام الطلب بنجاح',
+    'welcome_to_karakib' => 'أهلًا بك في كراكيب!',
+    'marked_as_read' => 'تم تعيين الاشعار كمرئي',
+    'marked_all_as_read' => 'تم تعيين جميع الاشعارات كمرئي'
 
 ];
