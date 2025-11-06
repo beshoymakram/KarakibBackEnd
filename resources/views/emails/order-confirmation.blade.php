@@ -71,6 +71,55 @@
             font-size: 16px;
         }
 
+        .qr-container {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8dfc8 100%);
+            border: 3px solid #3d7c3d;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .qr-title {
+            color: #2d5f2d;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .qr-code {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 15px 0;
+        }
+
+        .qr-code img {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+
+        .request-id {
+            color: #2d5f2d;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        .qr-instruction {
+            color: #666666;
+            font-size: 14px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+
         .order-box {
             background: linear-gradient(135deg, #e8f5e8 0%, #c8dfc8 100%);
             border-radius: 15px;
