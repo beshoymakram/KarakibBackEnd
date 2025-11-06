@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\QrCodeService;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends BaseModel
@@ -73,5 +74,14 @@ class Order extends BaseModel
     public function items()
     {
         return $this->hasMany(OrderItem::class, 'order_id');
+    }
+
+    public function getQrCodeImageAttribute()
+    {
+        if (!$this->qr_code) {
+            return null;
+        }
+
+        return QrCodeService::getQrCodeDataUrl($this->qr_code);
     }
 }

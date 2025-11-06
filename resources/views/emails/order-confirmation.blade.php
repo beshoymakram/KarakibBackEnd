@@ -247,6 +247,17 @@
                 <span class="status-badge">✓ Order Confirmed</span>
             </div>
 
+            <div class="qr-container">
+                <div class="qr-title">🔍 Show This QR Code to Courier</div>
+                <div class="qr-code">
+                    <img src="{{ $order->qr_code_image }}" alt="Collection QR Code">
+                </div>
+                <div class="order-id">Order ID: #{{ $order->order_number }}</div>
+                <div class="qr-instruction">
+                    The courier will scan this code to confirm your delivery
+                </div>
+            </div>
+
             <div class="order-box">
                 <div class="order-header">
                     <div>
