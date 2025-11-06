@@ -164,7 +164,7 @@ class OrderController extends Controller
             if ($paid) {
                 $order = Order::where('order_number', $orderNumber)->first();
                 if ($order && $order->status !== 'paid') {
-                    $order->update(['status' => 'paid']);
+                    $order->update(['status' => 'paid', 'is_paid', true]);
                 }
             }
 
@@ -226,7 +226,8 @@ class OrderController extends Controller
     public function scanQrCode(Request $request)
     {
         $validated = $request->validate([
-            'qr_token' => 'required|string'
+            'qr_token' => 'required|string',
+            'order_id' => 'required|integer'
         ]);
 
         $courier = $request->user();
@@ -243,6 +244,13 @@ class OrderController extends Controller
 
         $data = $verification['data'];
 
+        if ($data['id'] != $validated['order_id']) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.wrong_order_qr')
+            ], 400);
+        }
+
         // Find the order
         $order = Order::where('id', $data['id'])
             ->where('order_number', $data['number'])
@@ -255,15 +263,22 @@ class OrderController extends Controller
             ], 404);
         }
 
-        // Check if already collected
-        if ($order->status === 'collected') {
+        if ($order->courier_id && $order->courier_id != $courier->id) {
             return response()->json([
                 'success' => false,
-                'message' => __('messages.order_already_collected')
+                'message' => __('messages.order_not_assigned_to_you')
+            ], 403);
+        }
+
+        // Check if already delivered
+        if ($order->status === 'delivered') {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.order_already_delivered')
             ], 400);
         }
 
-        // Check if already collected
+        // Check if already cancelled
         if ($order->status === 'cancelled') {
             return response()->json([
                 'success' => false,
@@ -271,15 +286,15 @@ class OrderController extends Controller
             ], 400);
         }
 
-        // Mark as collected
+        // Mark as delivered
         $order->update([
-            'status' => 'collected',
+            'status' => 'delivered',
             'collected_at' => now(),
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => __('messages.order_collected_successfully'),
+            'message' => __('messages.order_delivered_successfully'),
             'order' => $order->load(['user', 'items.product', 'address'])
         ]);
     }

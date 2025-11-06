@@ -198,6 +198,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/users/{user}', [UsersController::class, 'destroy']);
     });
     Route::middleware('courier')->group(function () {
+        Route::get('/courier/numbers', [CourierController::class, 'index']);
         Route::get('/assigned-requests', [CourierController::class, 'getAssignedRequests']);
         Route::get('/assigned-orders', [CourierController::class, 'getAssignedOrders']);
 

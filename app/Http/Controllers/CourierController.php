@@ -8,6 +8,25 @@ use Illuminate\Http\Request;
 
 class CourierController extends Controller
 {
+    public function index(Request $request)
+    {
+        $ordersCount = Order::where('courier_id', $request->user()->id)->count();
+        $newOrdersCount = Order::where('courier_id', $request->user()->id)->where('created_at', '>=', now()->subDay())->count();
+
+        $requestsCount = ModelsRequest::where('courier_id', $request->user()->id)->count();
+        $newRequestsCount = ModelsRequest::where('courier_id', $request->user()->id)->where('status', 'assigned')->count();
+
+        return response()->json([
+            'orders' => [
+                'total' => $ordersCount,
+                'new' => $newOrdersCount
+            ],
+            'requests' => [
+                'total' => $requestsCount,
+                'pending' => $newRequestsCount
+            ],
+        ]);
+    }
     public function getAssignedRequests(Request $request)
     {
         if ($request->user()->type !== 'courier') {

@@ -17,13 +17,14 @@ class Order extends BaseModel
         'collected_at',
         'status',
         'qr_code',
+        'is_paid',
         'payment_method'
     ];
 
     protected $casts = [
         'total' => 'decimal:2',
         'collected_at' => 'datetime',
-
+        'is_paid' => 'boolean',
     ];
 
     public function user()
