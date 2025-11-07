@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +26,15 @@ class RegisterCourierController extends Controller
             'password' => Hash::make($validated['password']),
             'type' => 'courier',
         ]);
+
+        $admins = User::where('type', 'admin')->get();
+        foreach ($admins as $admin) {
+            Notification::create([
+                'user_id' => $admin->id,
+                'content' => 'new_courier_added',
+                'icon' => asset('images/new-user.svg'),
+            ]);
+        }
 
         return response()->json([
             'message' => __('messages.courier_added_successfully'),

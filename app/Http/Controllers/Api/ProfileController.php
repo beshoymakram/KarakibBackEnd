@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\PointHistory;
 use App\Models\Request as ModelsRequest;
@@ -139,6 +140,12 @@ class ProfileController extends Controller
             'status' => 'cancelled'
         ]);
 
+        Notification::create([
+            'user_id' => $order->user_id,
+            'content' => 'order_cancelled_successfully',
+            'icon' => asset('images/cancel.svg'),
+        ]);
+
         return response()->json([
             'message' => __('messages.Order cancelled successfully')
         ], 201);
@@ -152,6 +159,12 @@ class ProfileController extends Controller
 
         $request->update([
             'status' => 'cancelled'
+        ]);
+
+        Notification::create([
+            'user_id' => $request->user_id,
+            'content' => 'request_cancelled_successfully',
+            'icon' => asset('images/cancel.svg'),
         ]);
 
         return response()->json([
@@ -180,6 +193,12 @@ class ProfileController extends Controller
 
         $request->user()->convertPoints($data['points']);
 
+        Notification::create([
+            'user_id' => $request->user()->id,
+            'content' => 'points_converted_successfully',
+            'icon' => asset('images/convert.svg'),
+        ]);
+
         return response()->json([
             'message' => __('messages.Points converted successfully')
         ], 201);
@@ -196,6 +215,12 @@ class ProfileController extends Controller
         }
 
         $request->user()->donatePoints($data['points']);
+
+        Notification::create([
+            'user_id' => $request->user()->id,
+            'content' => 'points_donated_successfully',
+            'icon' => asset('images/donate.svg'),
+        ]);
 
         return response()->json([
             'message' => __('messages.Points donated successfully')

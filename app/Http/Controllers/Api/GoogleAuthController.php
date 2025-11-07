@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -40,6 +41,12 @@ class GoogleAuthController extends Controller
                     $user->restore();
                     $user->status = 'active'; // Reset status
                     $user->save();
+
+                    Notification::create([
+                        'user_id' => $user->id,
+                        'content' => 'account_restored',
+                        'icon' => asset('images/restore.svg'),
+                    ]);
                 }
 
                 // Update Google ID if not set
@@ -53,6 +60,12 @@ class GoogleAuthController extends Controller
                 if ($user->status === 'deleted') {
                     $user->status = 'active';
                     $user->save();
+
+                    Notification::create([
+                        'user_id' => $user->id,
+                        'content' => 'account_restored',
+                        'icon' => asset('images/restore.svg'),
+                    ]);
                 }
             } else {
                 // Create new user
@@ -64,6 +77,12 @@ class GoogleAuthController extends Controller
                     'type' => 'user',
                     'password' => Hash::make(Str::random(24)), // Random password
                     'email_verified_at' => now(), // Auto-verify Google users
+                ]);
+
+                Notification::create([
+                    'user_id' => $user->id,
+                    'content' => 'welcome_to_karakib',
+                    'icon' => asset('images/happy-face.svg'),
                 ]);
             }
 

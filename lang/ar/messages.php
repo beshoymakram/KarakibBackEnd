@@ -61,7 +61,9 @@ return [
     "Order cancelled successfully" => "تم إلغاء الطلب بنجاح",
     "converted_successfully" => "تم تحويل النقاط بنجاح",
     "order_assigned_to_courier" => "تم تعيين الطلب علي المندوب",
+    "request_assigned_to_courier" => "تم تعيين الطلب علي المندوب",
     "order_unassigned" => "تم الغاء التعيين",
+    "request_unassigned" => "تم الغاء التعيين",
     "order_completed_successfully" => "تم اكمال الطلب بنجاح",
     "your_account_has_been_deleted" => "لقد تم حذف حسابك.",
     'wrong_order_qr' => 'الكود غير مطابق للطلب',
@@ -70,6 +72,11 @@ return [
     'order_collected_successfully' => 'تم استلام الطلب بنجاح',
     'welcome_to_karakib' => 'أهلًا بك في كراكيب!',
     'marked_as_read' => 'تم تعيين الاشعار كمرئي',
-    'marked_all_as_read' => 'تم تعيين جميع الاشعارات كمرئي'
+    'marked_all_as_read' => 'تم تعيين جميع الاشعارات كمرئي',
+    'new_user' => 'مستخدم جديد سجل للتو',
+    'points_converted_successfully' => 'تم تحويل النقاط الي رصيد بنجاح',
+    'points_donated_successfully' => 'تم التبرع بالنقاط بنجاح',
+    'account_restored' => 'تم اعادة تفعيل الحساب',
+    'request_cancelled_successfully' => 'تم الغاء الطلب بنجاح',
 
 ];

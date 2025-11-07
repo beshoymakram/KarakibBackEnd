@@ -11,7 +11,7 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         if ($request->user()) {
-            return response()->json($request->user()->notifications);
+            return response()->json($request->user()->notifications()->orderBy('created_at', 'desc')->get());
         } else {
             return response()->json([]);
         }

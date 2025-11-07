@@ -39,8 +39,17 @@ class RegisterController extends Controller
         Notification::create([
             'user_id' => $user->id,
             'content' => 'welcome_to_karakib',
-            'icon' => 'https://www.svgrepo.com/show/142449/happy-face.svg',
+            'icon' => asset('images/happy-face.svg'),
         ]);
+
+        $admins = User::where('type', 'admin')->get();
+        foreach ($admins as $admin) {
+            Notification::create([
+                'user_id' => $admin->id,
+                'content' => 'new_user',
+                'icon' => asset('images/new-user.svg'),
+            ]);
+        }
 
         return response()->json([
             'user' => $user,

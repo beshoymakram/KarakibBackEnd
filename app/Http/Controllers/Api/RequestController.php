@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CartItem;
+use App\Models\Notification;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestItem;
 use App\Models\User;
@@ -85,6 +86,12 @@ class RequestController extends Controller
             DB::commit();
             $request->user()->notify(new RequestConfirmation($order->fresh()));
 
+            Notification::create([
+                'user_id' => $user->id,
+                'content' => 'request_placed_successfully',
+                'icon' => asset('images/checkmark.svg'),
+            ]);
+
             return response()->json([
                 'message' => __('messages.request_placed_successfully'),
                 'request' => $order->load('items.item'),
@@ -102,6 +109,12 @@ class RequestController extends Controller
             'status' => 'cancelled'
         ]);
 
+        Notification::create([
+            'user_id' => $request->user_id,
+            'content' => 'request_cancelled_successfully',
+            'icon' => asset('images/cancel.svg'),
+        ]);
+
         return response()->json([
             'message' => __('messages.request_cancelled_successfully')
         ], 201);
@@ -113,10 +126,28 @@ class RequestController extends Controller
             'status' => 'completed'
         ]);
 
+        Notification::create([
+            'user_id' => $request->user_id,
+            'content' => 'request_completed_successfully',
+            'icon' => asset('images/finish.svg'),
+        ]);
+
         $request->user->addPoints($request->total, 'Points earned from request #' . $request->request_number);
+
+        Notification::create([
+            'user_id' => $request->user_id,
+            'content' => 'points_added_successfully',
+            'icon' => asset('images/added.svg'),
+        ]);
+
         if ($request->payout_method === 'donate') {
 
             $request->user->donatePoints($request->total, 'Points donated from request #' . $request->request_number);
+            Notification::create([
+                'user_id' => $request->user_id,
+                'content' => 'points_donated_successfully',
+                'icon' => asset('images/convert.svg'),
+            ]);
         }
 
         return response()->json([
@@ -132,17 +163,29 @@ class RequestController extends Controller
 
         $request->assignCourier($courier->id);
 
+        Notification::create([
+            'user_id' => $courier->id,
+            'content' => 'new_request_assigned',
+            'icon' => asset('images/assign.svg'),
+        ]);
+
         return response()->json([
-            'message' => __('messages.order_assigned_to_courier')
+            'message' => __('messages.request_assigned_to_courier')
         ], 201);
     }
 
     public function unassignRequest(ModelsRequest $request)
     {
+        Notification::create([
+            'user_id' => $request->courier_id,
+            'content' => 'request_unassigned',
+            'icon' => asset('images/unassign.svg'),
+        ]);
+
         $request->unassignCourier();
 
         return response()->json([
-            'message' => __('messages.order_unassigned')
+            'message' => __('messages.request_unassigned')
         ], 201);
     }
 
@@ -214,6 +257,19 @@ class RequestController extends Controller
         $order->update([
             'status' => 'collected',
             'collected_at' => now(),
+        ]);
+
+        Notification::create([
+            'user_id' => $order->courier_id,
+            'content' => 'order_collected_successfully',
+            'icon' => asset('images/collected.svg'),
+        ]);
+
+
+        Notification::create([
+            'user_id' => $order->user_id,
+            'content' => 'order_collected_successfully',
+            'icon' => asset('images/collected.svg'),
         ]);
 
         return response()->json([

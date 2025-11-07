@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CartItem;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -93,6 +94,11 @@ class OrderController extends Controller
 
                 $request->user()->notify(new OrderConfirmation($order));
 
+                Notification::create([
+                    'user_id' => $user->id,
+                    'content' => 'order_placed_successfully',
+                    'icon' => asset('images/checkmark.svg'),
+                ]);
 
                 return response()->json([
                     'message' => __('messages.order_placed_successfully'),
@@ -130,6 +136,11 @@ class OrderController extends Controller
 
             DB::commit();
             $request->user()->notify(new OrderConfirmation($order->fresh()));
+            Notification::create([
+                'user_id' => $user->id,
+                'content' => 'order_placed_successfully',
+                'icon' => asset('images/checkmark.svg'),
+            ]);
             return response()->json([
                 'message' => 'Stripe checkout session created',
                 'url' => $session->url,
@@ -185,6 +196,12 @@ class OrderController extends Controller
             'status' => 'cancelled'
         ]);
 
+        Notification::create([
+            'user_id' => $order->user_id,
+            'content' => 'order_cancelled_successfully',
+            'icon' => asset('images/cancel.svg'),
+        ]);
+
         return response()->json([
             'message' => __('messages.order_cancelled_successfully')
         ], 201);
@@ -194,6 +211,12 @@ class OrderController extends Controller
     {
         $order->update([
             'status' => 'completed'
+        ]);
+
+        Notification::create([
+            'user_id' => $order->user_id,
+            'content' => 'order_completed_successfully',
+            'icon' => asset('images/finish.svg'),
         ]);
 
         return response()->json([
@@ -209,6 +232,12 @@ class OrderController extends Controller
 
         $order->assignCourier($courier->id);
 
+        Notification::create([
+            'user_id' => $courier->id,
+            'content' => 'new_order_assigned',
+            'icon' => asset('images/assign.svg'),
+        ]);
+
         return response()->json([
             'message' => __('messages.order_assigned_to_courier')
         ], 201);
@@ -216,7 +245,14 @@ class OrderController extends Controller
 
     public function unassignOrder(Order $order)
     {
+        Notification::create([
+            'user_id' => $order->courier_id,
+            'content' => 'order_unassigned',
+            'icon' => asset('images/unassign.svg'),
+        ]);
+
         $order->unassignCourier();
+
 
         return response()->json([
             'message' => __('messages.order_unassigned')
@@ -290,6 +326,20 @@ class OrderController extends Controller
         $order->update([
             'status' => 'delivered',
             'collected_at' => now(),
+        ]);
+
+
+        Notification::create([
+            'user_id' => $order->courier_id,
+            'content' => 'order_delivered_successfully',
+            'icon' => asset('images/delivered.svg'),
+        ]);
+
+
+        Notification::create([
+            'user_id' => $order->user_id,
+            'content' => 'order_delivered_successfully',
+            'icon' => asset('images/delivered.svg'),
         ]);
 
         return response()->json([

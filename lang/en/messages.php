@@ -61,7 +61,9 @@ return [
     "Request cancelled successfully" => "Request cancelled successfully",
     "converted_successfully" => "Points converted successfully",
     "order_assigned_to_courier" => "Order assigned to courier",
+    "request_assigned_to_courier" => "Request assigned to courier",
     "order_unassigned" => "Order unassigned",
+    "request_unassigned" => "Request unassigned",
     "order_completed_successfully" => "Order completed successfully",
     "your_account_has_been_deleted" => "Your account has been deleted.",
     'wrong_order_qr' => 'This QR code does not match the selected order',
@@ -71,6 +73,11 @@ return [
     'order_collected_successfully' => 'Order collected successfully',
     'order_delivered_successfully' => 'Order delivered successfully',
     'welcome_to_karakib' => 'Welcome to karakib!',
+    'new_user' => 'New user just registered',
+    'account_restored' => 'Account restored',
+    'points_converted_successfully' => 'Points converted to balance successfully',
+    'request_cancelled_successfully' => 'Request cancelled successfully',
+    'points_donated_successfully' => 'Points donated successfully',
     'marked_as_read' => 'Marked as read',
     'marked_all_as_read' => 'Marked all as read'
 
