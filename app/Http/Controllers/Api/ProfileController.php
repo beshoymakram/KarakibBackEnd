@@ -10,6 +10,7 @@ use App\Models\Request as ModelsRequest;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
@@ -135,20 +136,35 @@ class ProfileController extends Controller
         if ($order->user_id !== $request->user()?->id) {
             return response()->json(['message' => __('messages.Order not found for this user')], 404);
         }
+        DB::beginTransaction();
+        try {
 
-        $order->update([
-            'status' => 'cancelled'
-        ]);
+            foreach ($order->items as $item) {
+                $item->product->increment('stock', $item->quantity);
+            }
 
-        Notification::create([
-            'user_id' => $order->user_id,
-            'content' => 'order_cancelled_successfully',
-            'icon' => asset('images/cancel.svg'),
-        ]);
+            $order->update([
+                'status' => 'cancelled'
+            ]);
 
-        return response()->json([
-            'message' => __('messages.Order cancelled successfully')
-        ], 201);
+            Notification::create([
+                'user_id' => $order->user_id,
+                'content' => 'order_cancelled_successfully',
+                'icon' => asset('images/cancel.svg'),
+            ]);
+
+            DB::commit();
+
+
+            return response()->json([
+                'message' => __('messages.Order cancelled successfully')
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to cancel order: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function cancelRequest(ModelsRequest $request, Request $requestt)

@@ -192,19 +192,34 @@ class OrderController extends Controller
 
     public function cancelOrder(Order $order, Request $request)
     {
-        $order->update([
-            'status' => 'cancelled'
-        ]);
+        DB::beginTransaction();
 
-        Notification::create([
-            'user_id' => $order->user_id,
-            'content' => 'order_cancelled_successfully',
-            'icon' => asset('images/cancel.svg'),
-        ]);
+        try {
+            foreach ($order->items as $item) {
+                $item->product->increment('stock', $item->quantity);
+            }
 
-        return response()->json([
-            'message' => __('messages.order_cancelled_successfully')
-        ], 201);
+            $order->update([
+                'status' => 'cancelled'
+            ]);
+
+            Notification::create([
+                'user_id' => $order->user_id,
+                'content' => 'order_cancelled_successfully',
+                'icon' => asset('images/cancel.svg'),
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => __('messages.order_cancelled_successfully')
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to cancel order: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function completeOrder(Order $order, Request $request)

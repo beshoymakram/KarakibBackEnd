@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AdminStatisticsController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\DonationController;
 use App\Http\Controllers\Api\GoogleAuthController;
+use App\Http\Controllers\Api\InquiryController;
+use App\Http\Controllers\Api\InquiryControllerController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\OrderController;
@@ -107,6 +109,7 @@ Route::delete('/cart/{id}', [CartController::class, 'remove']);
 Route::delete('/cart', [CartController::class, 'clear']);
 
 Route::post('/donate', [DonationController::class, 'checkout']);
+Route::post('/inquiries', [InquiryController::class, 'store']);
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Route::get('/verify-payment', [OrderController::class, 'verifyPayment']);
@@ -178,6 +181,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/products-categories', [ProductsCategoryController::class, 'store']);
         Route::put('/products-categories/{category}', [ProductsCategoryController::class, 'update']);
         Route::delete('/products-categories/{category}', [ProductsCategoryController::class, 'destroy']);
+
+        Route::get('/inquiries', [InquiryController::class, 'index']);
+        Route::put('/inquiries/{inquiry}', [InquiryController::class, 'update']);
+        Route::delete('/inquiries/{inquiry}', [InquiryController::class, 'destroy']);
 
         Route::post('/products', [ProductController::class, 'store']);
         Route::put('/products/{product}', [ProductController::class, 'update']);
