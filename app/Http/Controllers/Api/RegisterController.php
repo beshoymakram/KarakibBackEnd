@@ -27,10 +27,17 @@ class RegisterController extends Controller
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
             'type' => $validated['type'] ?? 'user',
+            'status' => $validated['type'] == 'courier' ? 'onhold' : 'active',
         ]);
 
         $user = User::with(['orders'])->find($user->id);
 
+        if ($user->type == 'courier') {
+            return response()->json([
+                'message' => __('messages.your_account_is_under_verification'),
+                'status' => 'onhold'
+            ], 403);
+        }
 
         $token = $user->createToken('auth-token')->plainTextToken;
 

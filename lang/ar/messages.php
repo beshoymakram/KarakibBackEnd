@@ -51,6 +51,7 @@ return [
     'inquiry_created_successfully' => 'تم استلام استعلامك بنجاح',
     'inquiry_updated_successfully' => 'تم تحديث الاستعلام بنجاح',
     'inquiry_deleted_successfully' => 'تم حذف الاستعلام بنجاح',
+    "your_account_is_under_verification" => "حسابك تحت المراجعة",
     "Users registered with Google can't change their email." => "لا يمكن للمستخدمين المسجلين عبر جوجل تغيير بريدهم الإلكتروني.",
     "Personal info updated successfully" => "تم تحديث المعلومات الشخصية بنجاح",
     "Your account has been deleted successfully" => "تم حذف حسابك بنجاح",

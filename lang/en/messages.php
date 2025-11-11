@@ -46,6 +46,7 @@ return [
     'product_updated_successfully' => 'Product updated successfully',
     'product_deleted_successfully' => 'Product deleted successfully',
     'category_created_successfully' => 'Category recieved successfully',
+    "your_account_is_under_verification" => "Your account is under verification",
     'category_updated_successfully' => 'Category updated successfully',
     'category_deleted_successfully' => 'Category deleted successfully',
     'inquiry_created_successfully' => 'Inquiry created successfully',

@@ -31,6 +31,13 @@ class LoginController extends Controller
             ], 403);
         }
 
+        if ($user->status == 'onhold') {
+            return response()->json([
+                'message' => __('messages.your_account_is_under_verification'),
+                'status' => 'onhold'
+            ], 403);
+        }
+
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([

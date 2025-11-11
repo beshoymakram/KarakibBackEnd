@@ -25,6 +25,7 @@ class RegisterCourierController extends Controller
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
             'type' => 'courier',
+            'status' => 'onhold',
         ]);
 
         $admins = User::where('type', 'admin')->get();
