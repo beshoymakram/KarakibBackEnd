@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\UserPasswordResetController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Models\CourierRequest;
 use App\Models\ProductsCategory;
 use Illuminate\Http\Request;
@@ -119,6 +120,7 @@ Route::post('/forgot-password', [UserPasswordResetController::class, 'send']);
 Route::post('/forgot-password/resend', [UserPasswordResetController::class, 'resend']);
 Route::post('/verify-code', [UserPasswordResetController::class, 'store']);
 Route::post('/reset-password', [UserPasswordResetController::class, 'update']);
+Route::get('/products/{productId}/reviews', [ReviewController::class, 'index']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -150,6 +152,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/collect', [RequestController::class, 'checkout']);
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
+
+    // Check if user can review
+    Route::get('/products/{productId}/can-review', [ReviewController::class, 'canReview']);
+
+    // Submit/manage reviews
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::put('/reviews/{reviewId}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{reviewId}', [ReviewController::class, 'destroy']);
 
     // Your protected routes here
     Route::middleware('admin')->group(function () {
