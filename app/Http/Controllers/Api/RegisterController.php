@@ -18,8 +18,14 @@ class RegisterController extends Controller
             'email' => 'required|email|unique:users',
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'type' => 'sometimes|in:user,courier'
+            'type' => 'sometimes|in:user,courier',
+            'personal_id' => 'required_if:type,courier|file'
         ]);
+
+        if ($request->hasFile('personal_id')) {
+            $personalIdPath = $request->file('personal_id')->store('personal-ids', 'public');
+            $validated['personal_id'] = $personalIdPath;
+        }
 
         $user = User::create([
             'name' => $validated['name'],
@@ -28,6 +34,7 @@ class RegisterController extends Controller
             'password' => Hash::make($validated['password']),
             'type' => $validated['type'] ?? 'user',
             'status' => $validated['type'] == 'courier' ? 'onhold' : 'active',
+            'personal_id' => $validated['personal_id'] ?? null,
         ]);
 
         $user = User::with(['orders'])->find($user->id);

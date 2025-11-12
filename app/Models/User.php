@@ -33,6 +33,7 @@ class User extends Authenticatable
         'email_verified_at',
         'otp',
         'otp_expired_at',
+        'personal_id'
     ];
 
     /**
@@ -63,12 +64,20 @@ class User extends Authenticatable
         ];
     }
 
-    protected $appends = ['avatar_url'];
+    protected $appends = ['avatar_url', 'personal_id_url'];
 
     public function getAvatarUrlAttribute()
     {
         if ($this->avatar) {
             return url('uploads/' . $this->avatar);
+        }
+        return null;
+    }
+
+    public function getPersonalIdUrlAttribute()
+    {
+        if ($this->personal_id) {
+            return url('uploads/' . $this->personal_id);
         }
         return null;
     }

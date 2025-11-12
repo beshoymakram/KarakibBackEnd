@@ -73,7 +73,6 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $cartItem->cartable_id,
                     'quantity' => $cartItem->quantity,
-                    'size' => $cartItem->size,
                     'price' => $cartItem->cartable->price
                 ]);
 

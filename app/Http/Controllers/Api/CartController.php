@@ -60,7 +60,6 @@ class CartController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:product,waste',
             'item_id' => 'required|integer',
-            'size' => 'nullable|in:xs,s,m,l,xl,xxl',
             'quantity' => 'required|integer|min:1'
         ]);
 
@@ -78,9 +77,6 @@ class CartController extends Controller
         // Find existing cart item
         $cartItem = CartItem::where('cartable_type', $modelClass)
             ->where('cartable_id', $validated['item_id'])
-            ->when($validated['type'] === 'product', function ($query) use ($validated) {
-                $query->where('size', $validated['size'] ?? null);
-            })
             ->when($user, function ($query) use ($user) {
                 return $query->where('user_id', $user->id);
             }, function ($query) use ($sessionId) {
@@ -103,7 +99,6 @@ class CartController extends Controller
                 'session_id' => $user ? null : $sessionId,
                 'cartable_type' => $modelClass,
                 'cartable_id' => $validated['item_id'],
-                'size' => $validated['size'] ?? null,
                 'quantity' => $validated['quantity']
             ]);
         }
