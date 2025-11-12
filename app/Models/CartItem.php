@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends BaseModel
 {
-    protected $fillable = ['user_id', 'session_id', 'cartable_type', 'cartable_id', 'quantity'];
+    protected $fillable = ['user_id', 'session_id', 'cartable_type', 'cartable_id', 'size', 'quantity'];
     protected $appends = ['subtotal', 'points'];
-
+o
     public function cartable()
     {
         return $this->morphTo();
