@@ -8,7 +8,7 @@ class CartItem extends BaseModel
 {
     protected $fillable = ['user_id', 'session_id', 'cartable_type', 'cartable_id', 'size', 'quantity'];
     protected $appends = ['subtotal', 'points'];
-o
+
     public function cartable()
     {
         return $this->morphTo();
