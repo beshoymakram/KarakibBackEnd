@@ -14,7 +14,7 @@ class Product extends BaseModel
         'price' => 'decimal:2'
     ];
 
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url', 'average_rating', 'reviews_count'];
 
     public function getImageUrlAttribute()
     {
@@ -32,5 +32,20 @@ class Product extends BaseModel
     public function category()
     {
         return $this->belongsTo(ProductsCategory::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?? 0;
+    }
+
+    public function getReviewsCountAttribute()
+    {
+        return $this->reviews()->count();
     }
 }
