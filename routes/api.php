@@ -116,6 +116,7 @@ Route::get('/verify-payment', [OrderController::class, 'verifyPayment']);
 Route::get('/verify-donation', [DonationController::class, 'verifyDonation']);
 
 Route::post('/forgot-password', [UserPasswordResetController::class, 'send']);
+Route::post('/forgot-password/resend', [UserPasswordResetController::class, 'resend']);
 Route::post('/verify-code', [UserPasswordResetController::class, 'store']);
 Route::post('/reset-password', [UserPasswordResetController::class, 'update']);
 

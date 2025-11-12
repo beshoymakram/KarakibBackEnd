@@ -27,6 +27,20 @@ class UserPasswordResetController extends Controller
         ]);
     }
 
+    public function resend(Request $request)
+    {
+        $request->validate(['email' => 'required|email|exists:users,email']);
+
+        $user = User::where('email', $request->email)->first();
+
+        $user->generateOtp();
+        $user->notify(new Otp);
+
+        return response()->json([
+            'message' => __('messages.otpResent'),
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
