@@ -138,6 +138,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile/points', [ProfileController::class, 'pointsHistory']);
     Route::post('/profile/points/convert', [ProfileController::class, 'convertPoints']);
     Route::post('/profile/points/donate', [ProfileController::class, 'donatePoints']);
+    Route::get('/profile/balance', [ProfileController::class, 'balanceHistory']);
+    Route::post('/profile/balance/withdraw', [ProfileController::class, 'withdrawBalance']);
     Route::get('/profile/requests', [ProfileController::class, 'getRequests']);
     Route::put('/profile/requests/{request}/cancel', [ProfileController::class, 'cancelRequest']);
     Route::get('/profile/notifications', [NotificationController::class, 'index']);

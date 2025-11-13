@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BalanceHistory;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\PointHistory;
@@ -197,6 +198,15 @@ class ProfileController extends Controller
         return response()->json($history);
     }
 
+    public function balanceHistory(Request $request)
+    {
+        $history = BalanceHistory::where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($history);
+    }
+
     public function convertPoints(Request $request)
     {
         $data = $request->validate([
@@ -240,6 +250,30 @@ class ProfileController extends Controller
 
         return response()->json([
             'message' => __('messages.Points donated successfully')
+        ], 201);
+    }
+
+    public function withdrawBalance(Request $request)
+    {
+        $data = $request->validate([
+            'amount' => 'required|integer|min:1',
+            'wallet_number' => 'required|string',
+        ]);
+
+        if ($request->user()->balance < $data['amount']) {
+            return response()->json(['message' => __('messages.Insufficient balance to withdraw')], 400);
+        }
+
+        $request->user()->withdrawBalance($data['amount'], $data['wallet_number']);
+
+        Notification::create([
+            'user_id' => $request->user()->id,
+            'content' => 'balance_withdrawn_successfully',
+            'icon' => asset('images/donate.svg'),
+        ]);
+
+        return response()->json([
+            'message' => __('messages.Balance withdrawn successfully')
         ], 201);
     }
 }

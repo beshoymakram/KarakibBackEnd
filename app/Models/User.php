@@ -116,6 +116,14 @@ class User extends Authenticatable
             'description' => "Converted {$points} points to {$cash} EGP"
         ]);
 
+        BalanceHistory::create([
+            'user_id' => $this->id,
+            'amount' => $cash,
+            'type' => 'convert',
+            'status' => 'completed',
+            'description' => "Converted {$points} points to {$cash} EGP"
+        ]);
+
         return $cash;
     }
 
@@ -133,6 +141,26 @@ class User extends Authenticatable
             'points' => $points,
             'type' => 'donate',
             'description' => $description
+        ]);
+    }
+
+    public function withdrawBalance($amount, $wallet_number, $description = 'Withdraw balance')
+    {
+        if ($amount > $this->balance) {
+            throw new \Exception('Insufficient points');
+        }
+
+        $this->balance -= $amount;
+        $this->save();
+
+
+        BalanceHistory::create([
+            'user_id' => $this->id,
+            'amount' => $amount,
+            'wallet_number' => $wallet_number,
+            'type' => 'withdraw',
+            'status' => 'pending',
+            'description' => $description . ' to ' . $wallet_number
         ]);
     }
 
