@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\User;
+use App\Notifications\Welcome;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
@@ -79,11 +80,22 @@ class GoogleAuthController extends Controller
                     'email_verified_at' => now(), // Auto-verify Google users
                 ]);
 
+                $user->notify(new Welcome);
+
                 Notification::create([
                     'user_id' => $user->id,
                     'content' => 'welcome_to_karakib',
                     'icon' => asset('images/happy-face.svg'),
                 ]);
+
+                $admins = User::where('type', 'admin')->get();
+                foreach ($admins as $admin) {
+                    Notification::create([
+                        'user_id' => $admin->id,
+                        'content' => 'new_user',
+                        'icon' => asset('images/new-user.svg'),
+                    ]);
+                }
             }
 
             // Create token (if using Sanctum)
