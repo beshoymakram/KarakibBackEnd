@@ -26,7 +26,7 @@ class Product extends BaseModel
 
     public function orders()
     {
-        return $this->belongsT(Order::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function category()
