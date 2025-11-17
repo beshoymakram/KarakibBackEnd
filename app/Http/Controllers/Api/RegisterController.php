@@ -19,7 +19,7 @@ class RegisterController extends Controller
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'type' => 'sometimes|in:user,courier',
-            'personal_id' => 'required_if:type,courier|file'
+            'personal_id' => 'required_if:type,courier|file|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048'
         ]);
 
         if ($request->hasFile('personal_id')) {

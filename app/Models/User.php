@@ -164,6 +164,21 @@ class User extends Authenticatable
         ]);
     }
 
+    public function refundBalance($amount, $description = 'Refund balance')
+    {
+        $this->balance += $amount;
+        $this->save();
+
+
+        BalanceHistory::create([
+            'user_id' => $this->id,
+            'amount' => $amount,
+            'type' => 'refund',
+            'status' => 'completed',
+            'description' => $description
+        ]);
+    }
+
     public function generateOtp()
     {
         $this->timestamps = false;

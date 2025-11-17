@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\UserPasswordResetController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\WithdrawController;
 use App\Models\CourierRequest;
 use App\Models\ProductsCategory;
 use Illuminate\Http\Request;
@@ -216,6 +217,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/users/{user}', [UsersController::class, 'update']);
 
         Route::delete('/users/{user}', [UsersController::class, 'destroy']);
+
+        Route::get('/withdrawals', [WithdrawController::class, 'index']);
+        Route::post('/withdrawals/{withdrawal}/complete', [WithdrawController::class, 'completeWithdraw']);
+        Route::post('/withdrawals/{withdrawal}/refund', [WithdrawController::class, 'refundWithdraw']);
     });
     Route::middleware('courier')->group(function () {
         Route::get('/courier/numbers', [CourierController::class, 'index']);

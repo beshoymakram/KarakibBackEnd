@@ -269,7 +269,7 @@ class ProfileController extends Controller
         Notification::create([
             'user_id' => $request->user()->id,
             'content' => 'balance_withdrawn_successfully',
-            'icon' => asset('images/donate.svg'),
+            'icon' => asset('images/checkmark.svg'),
         ]);
 
         return response()->json([
