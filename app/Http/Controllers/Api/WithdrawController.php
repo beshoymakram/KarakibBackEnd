@@ -37,10 +37,20 @@ class WithdrawController extends Controller
         ], 201);
     }
 
-    public function completeWithdraw(BalanceHistory $withdrawal)
+    public function completeWithdraw(BalanceHistory $withdrawal, Request $request)
     {
+        $data = $request->validate([
+            'proof' => 'required|file|mimes:jpeg,png,jpg,gif,svg,pdf|max:5000'
+        ]);
+
+        if ($request->hasFile('proof')) {
+            $proofPath = $request->file('proof')->store('products', 'public');
+            $data['proof'] = $proofPath;
+        }
+
         $withdrawal->update([
-            'status' => 'completed'
+            'status' => 'completed',
+            'proof' => $data['proof']
         ]);
 
         Notification::create([

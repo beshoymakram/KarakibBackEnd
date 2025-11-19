@@ -14,12 +14,24 @@ class BalanceHistory extends BaseModel
         'type',
         'status',
         'wallet_number',
-        'description'
+        'description',
+        'proof'
     ];
 
     protected $casts = [
         'amount' => 'decimal:2'
     ];
+
+
+    protected $appends = ['proof_url'];
+
+    public function getProofUrlAttribute()
+    {
+        if ($this->proof) {
+            return url('uploads/' . $this->proof);
+        }
+        return null;
+    }
 
     public function user()
     {

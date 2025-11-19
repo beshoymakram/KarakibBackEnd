@@ -272,6 +272,15 @@ class ProfileController extends Controller
             'icon' => asset('images/checkmark.svg'),
         ]);
 
+        $admins = User::where('type', 'admin')->get();
+        foreach ($admins as $admin) {
+            Notification::create([
+                'user_id' => $admin->id,
+                'content' => 'new_withdraw_request',
+                'icon' => asset('images/new-request.svg'),
+            ]);
+        }
+
         return response()->json([
             'message' => __('messages.Balance withdrawn successfully')
         ], 201);
