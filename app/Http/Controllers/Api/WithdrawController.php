@@ -40,7 +40,7 @@ class WithdrawController extends Controller
     public function completeWithdraw(BalanceHistory $withdrawal, Request $request)
     {
         $data = $request->validate([
-            'proof' => 'required|file|mimes:jpeg,png,jpg,gif,svg,pdf|max:5000'
+            'proof' => 'required|file|mimes:jpeg,png,jpg,gif,svg,webp,pdf|max:5000'
         ]);
 
         if ($request->hasFile('proof')) {

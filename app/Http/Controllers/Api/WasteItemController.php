@@ -29,7 +29,7 @@ class WasteItemController extends Controller
             'name' => 'required|string|max:255',
             'points_per_unit' => 'required|numeric|min:0',
             'unit' => 'required|in:kg,piece',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -56,7 +56,7 @@ class WasteItemController extends Controller
             'name' => 'string|max:255',
             'points_per_unit' => 'numeric|min:0',
             'unit' => 'in:kg,piece',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         if ($request->hasFile('image')) {

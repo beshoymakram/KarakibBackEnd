@@ -40,7 +40,7 @@ class UsersController extends Controller
             'phone' => 'required|string|unique:users,phone,' . $user->id,
             'status' => 'sometimes|in:active,suspended',
             'type' => 'sometimes|in:user,courier,admin',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
