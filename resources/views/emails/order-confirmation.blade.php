@@ -280,7 +280,7 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="https://karakib.netlify.app/assets/logo_horizontal-DGy32ZJX.svg" alt="Karakib Logo">
+                <img src="{{ asset('images/email-logo.svg') }}" alt="Karakib Logo">
             </div>
             <div class="tagline">Every small act of recycling creates a cleaner tomorrow</div>
         </div>
