@@ -17,6 +17,10 @@ class OrderConfirmation extends Notification implements ShouldQueue
      */
     protected $order;
 
+    public $tries = 3;
+    public $timeout = 60;
+    public $maxExceptions = 2;
+
     public function __construct($order)
     {
         $this->order = $order;
@@ -40,6 +44,10 @@ class OrderConfirmation extends Notification implements ShouldQueue
         $order = Order::where('id', $this->order->id)->first();
         $qrCodePath = null;
 
+        if (!$order) {
+            throw new \Exception('Order not found');
+        }
+
         try {
             // Generate QR code file for attachment
             $qrCodePath = \App\Services\QrCodeService::generateQrCodeFile(
@@ -54,6 +62,14 @@ class OrderConfirmation extends Notification implements ShouldQueue
                     'as' => 'order-qr-code.png',
                     'mime' => 'image/png',
                 ]);
+        } catch (\Exception $e) {
+            // Log the error but don't fail the notification
+            \Log::error('QR Code generation failed: ' . $e->getMessage());
+
+            // Return email without QR attachment if it fails
+            return (new MailMessage)
+                ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
+                ->view('emails.order-confirmation', ['order' => $order]);
         } finally {
             // Clean up temporary file after email is sent
             if ($qrCodePath && file_exists($qrCodePath)) {
