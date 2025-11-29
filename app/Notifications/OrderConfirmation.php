@@ -54,9 +54,6 @@ class OrderConfirmation extends Notification implements ShouldQueue
                 ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
                 ->view('emails.order-confirmation', ['order' => $order]);
 
-            $mailMessage->embed(public_path('images/email-logo.svg'), 'logo');
-
-
             // Generate QR code as base64, then decode to binary
             if ($order->qr_code) {
                 $qrCodeBase64 = \App\Services\QrCodeService::generateQrCode(
