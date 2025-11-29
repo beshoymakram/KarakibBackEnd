@@ -280,7 +280,7 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/email-logo.svg'))) }}" alt="Karakib Logo">
+                <img src="data:image/svg+xml;base64,{{ base64_encode(file_get_contents(public_path('images/email-logo.svg'))) }}" alt="Karakib Logo">
             </div>
             <div class="tagline">Every small act of recycling creates a cleaner tomorrow</div>
         </div>
