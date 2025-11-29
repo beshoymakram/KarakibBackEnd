@@ -176,7 +176,7 @@ class OrderController extends Controller
             if ($paid) {
                 $order = Order::where('order_number', $orderNumber)->first();
                 if ($order && $order->status !== 'paid') {
-                    $order->update(['status' => 'paid', 'is_paid', true]);
+                    $order->update(['status' => 'paid', 'is_paid' =>  true]);
                 }
             }
 

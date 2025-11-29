@@ -38,11 +38,28 @@ class OrderConfirmation extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $order = Order::where('id', $this->order->id)->first();
-        return (new MailMessage)
-            ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
-            ->view('emails.order-confirmation', [
-                'order' => $order,
-            ]);
+        $qrCodePath = null;
+
+        try {
+            // Generate QR code file for attachment
+            $qrCodePath = \App\Services\QrCodeService::generateQrCodeFile(
+                $order->qr_code,
+                250
+            );
+
+            return (new MailMessage)
+                ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
+                ->view('emails.order-confirmation', ['order' => $order])
+                ->attach($qrCodePath, [
+                    'as' => 'order-qr-code.png',
+                    'mime' => 'image/png',
+                ]);
+        } finally {
+            // Clean up temporary file after email is sent
+            if ($qrCodePath && file_exists($qrCodePath)) {
+                @unlink($qrCodePath);
+            }
+        }
     }
 
     /**

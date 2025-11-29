@@ -60,6 +60,25 @@ class QrCodeService
     }
 
     /**
+     * Generate QR code and save to temporary file for email attachment
+     * This is the recommended approach for email compatibility
+     */
+    public static function generateQrCodeFile($token, $size = 250)
+    {
+        $qrCode = self::generateQrCodeForEmail($token, $size);
+        $tempPath = storage_path('app/temp/qr_' . Str::random(10) . '.png');
+
+        // Ensure temp directory exists
+        if (!file_exists(storage_path('app/temp'))) {
+            mkdir(storage_path('app/temp'), 0755, true);
+        }
+
+        file_put_contents($tempPath, $qrCode);
+
+        return $tempPath;
+    }
+
+    /**
      * Verify and decode QR code token
      */
     public static function verifyToken($token)
@@ -75,7 +94,7 @@ class QrCodeService
         } catch (\Exception $e) {
             return [
                 'valid' => false,
-                'message' => $e
+                'message' => $e->getMessage()
             ];
         }
     }

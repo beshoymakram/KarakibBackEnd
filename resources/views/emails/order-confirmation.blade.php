@@ -299,11 +299,14 @@
             <div class="qr-container">
                 <div class="qr-title">🔍 Show This QR Code to Courier</div>
                 <div class="qr-code">
-                    <img src="{{ $order->qr_code_image }}" alt="Collection QR Code">
+                    <img src="{{ $order->qr_code_image }}" alt="Collection QR Code" style="display: block;">
                 </div>
                 <div class="order-id">Order ID: #{{ $order->order_number }}</div>
                 <div class="qr-instruction">
                     The courier will scan this code to confirm your delivery
+                    <small style="color: #999; font-size: 12px;">
+                        If QR code is not visible, please check the attached image file
+                    </small>
                 </div>
             </div>
 
