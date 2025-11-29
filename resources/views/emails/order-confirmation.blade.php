@@ -280,7 +280,7 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('images/email-logo.svg') }}" alt="Karakib Logo">
+                <img src="cid:logo" alt="Karakib Logo">
             </div>
             <div class="tagline">Every small act of recycling creates a cleaner tomorrow</div>
         </div>
