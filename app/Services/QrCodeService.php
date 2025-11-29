@@ -59,6 +59,7 @@ class QrCodeService
             ->generate($token);
     }
 
+
     /**
      * Generate QR code and save to temporary file for email attachment
      * This is the recommended approach for email compatibility

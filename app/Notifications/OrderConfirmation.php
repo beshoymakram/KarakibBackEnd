@@ -54,14 +54,17 @@ class OrderConfirmation extends Notification implements ShouldQueue
                 ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
                 ->view('emails.order-confirmation', ['order' => $order]);
 
-            // Generate QR code as binary data (not file) for attachment
+            // Generate QR code as base64, then decode to binary
             if ($order->qr_code) {
-                $qrCodeBinary = \App\Services\QrCodeService::generateQrCodeForEmail(
+                $qrCodeBase64 = \App\Services\QrCodeService::generateQrCode(
                     $order->qr_code,
                     250
                 );
 
-                // Attach the binary data directly (no temp file needed)
+                // Decode base64 to binary
+                $qrCodeBinary = base64_decode($qrCodeBase64);
+
+                // Attach the binary data
                 $mailMessage->attachData(
                     $qrCodeBinary,
                     'order-qr-code.png',
@@ -73,7 +76,6 @@ class OrderConfirmation extends Notification implements ShouldQueue
         } catch (\Exception $e) {
             \Log::error('QR Code generation failed: ' . $e->getMessage());
 
-            // Return email without QR attachment if it fails
             return (new MailMessage)
                 ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
                 ->view('emails.order-confirmation', ['order' => $order]);
