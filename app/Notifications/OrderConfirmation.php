@@ -41,40 +41,42 @@ class OrderConfirmation extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $order = Order::where('id', $this->order->id)->first();
-        $qrCodePath = null;
+        $order = Order::with(['items.product', 'address', 'user'])
+            ->where('id', $this->order->id)
+            ->first();
 
         if (!$order) {
             throw new \Exception('Order not found');
         }
 
         try {
-            // Generate QR code file for attachment
-            $qrCodePath = \App\Services\QrCodeService::generateQrCodeFile(
-                $order->qr_code,
-                250
-            );
-
-            return (new MailMessage)
+            $mailMessage = (new MailMessage)
                 ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
-                ->view('emails.order-confirmation', ['order' => $order])
-                ->attach($qrCodePath, [
-                    'as' => 'order-qr-code.png',
-                    'mime' => 'image/png',
-                ]);
+                ->view('emails.order-confirmation', ['order' => $order]);
+
+            // Generate QR code as binary data (not file) for attachment
+            if ($order->qr_code) {
+                $qrCodeBinary = \App\Services\QrCodeService::generateQrCodeForEmail(
+                    $order->qr_code,
+                    250
+                );
+
+                // Attach the binary data directly (no temp file needed)
+                $mailMessage->attachData(
+                    $qrCodeBinary,
+                    'order-qr-code.png',
+                    ['mime' => 'image/png']
+                );
+            }
+
+            return $mailMessage;
         } catch (\Exception $e) {
-            // Log the error but don't fail the notification
             \Log::error('QR Code generation failed: ' . $e->getMessage());
 
             // Return email without QR attachment if it fails
             return (new MailMessage)
                 ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
                 ->view('emails.order-confirmation', ['order' => $order]);
-        } finally {
-            // Clean up temporary file after email is sent
-            if ($qrCodePath && file_exists($qrCodePath)) {
-                @unlink($qrCodePath);
-            }
         }
     }
 
