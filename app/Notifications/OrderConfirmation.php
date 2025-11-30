@@ -17,10 +17,6 @@ class OrderConfirmation extends Notification implements ShouldQueue
      */
     protected $order;
 
-    public $tries = 3;
-    public $timeout = 60;
-    public $maxExceptions = 2;
-
     public function __construct($order)
     {
         $this->order = $order;
@@ -41,45 +37,12 @@ class OrderConfirmation extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $order = Order::with(['items.product', 'address', 'user'])
-            ->where('id', $this->order->id)
-            ->first();
-
-        if (!$order) {
-            throw new \Exception('Order not found');
-        }
-
-        try {
-            $mailMessage = (new MailMessage)
-                ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
-                ->view('emails.order-confirmation', ['order' => $order]);
-
-            // Generate QR code as base64, then decode to binary
-            if ($order->qr_code) {
-                $qrCodeBase64 = \App\Services\QrCodeService::generateQrCode(
-                    $order->qr_code,
-                    250
-                );
-
-                // Decode base64 to binary
-                $qrCodeBinary = base64_decode($qrCodeBase64);
-
-                // Attach the binary data
-                $mailMessage->attachData(
-                    $qrCodeBinary,
-                    'order-qr-code.png',
-                    ['mime' => 'image/png']
-                );
-            }
-
-            return $mailMessage;
-        } catch (\Exception $e) {
-            \Log::error('QR Code generation failed: ' . $e->getMessage());
-
-            return (new MailMessage)
-                ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
-                ->view('emails.order-confirmation', ['order' => $order]);
-        }
+        $order = Order::where('id', $this->order->id)->first();
+        return (new MailMessage)
+            ->subject('Order Confirmation #' . $order->order_number . ' - Karakib')
+            ->view('emails.order-confirmation', [
+                'order' => $order,
+            ]);
     }
 
     /**
