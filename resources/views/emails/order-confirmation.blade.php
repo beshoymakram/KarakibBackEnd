@@ -300,7 +300,7 @@
             <div class="qr-container">
                 <div class="qr-title">🔍 Show This QR Code to Courier</div>
                 <div class="qr-code">
-                    <img src='{{ url("$order->qr_code_image") }}' alt="Collection QR Code" style="display: block;">
+                    <img src='{{ url("$order->qr_code_image") }}' alt="Collection QR Code">
                 </div>
                 <div class="order-id">Order ID: #{{ $order->order_number }}</div>
                 <div class="qr-instruction">
@@ -334,10 +334,10 @@
                         <span>Subtotal:</span>
                         <span>{{ number_format($order->total, 2) }} EGP</span>
                     </div>
-                    <div class="summary-row">
+                    <!-- <div class="summary-row">
                         <span>Shipping:</span>
                         <span>{{ number_format(20, 2) }} EGP</span>
-                    </div>
+                    </div> -->
                     <div class="summary-row total">
                         <span>Total:</span>
                         <span>{{ number_format($order->total, 2) }} EGP</span>
