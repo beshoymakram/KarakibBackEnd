@@ -87,7 +87,7 @@ Route::get('/migrate', function () {
     }
 });
 
-Route::get('/qr/{order_number}', function ($orderNumber) {
+Route::get('/order-qr/{order_number}', function ($orderNumber) {
     $order = Order::where('order_number', $orderNumber)->firstOrFail();
 
     if (!$order->qr_code) {
@@ -101,7 +101,7 @@ Route::get('/qr/{order_number}', function ($orderNumber) {
         ->header('Cache-Control', 'public, max-age=604800');
 })->name('order-qr.show');
 
-Route::get('/qr/{request_number}', function ($requestNumber) {
+Route::get('/request-qr/{request_number}', function ($requestNumber) {
     $request = ModelsRequest::where('request_number', $requestNumber)->firstOrFail();
 
     if (!$request->qr_code) {
