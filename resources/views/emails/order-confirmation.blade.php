@@ -45,13 +45,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
         }
 
         .logo img {
             height: 75px;
             width: auto;
             max-width: 200px;
+            margin: auto;
         }
 
         .content {
