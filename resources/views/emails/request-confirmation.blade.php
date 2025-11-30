@@ -51,6 +51,7 @@
             height: 75px;
             width: auto;
             max-width: 200px;
+            margin: auto;
         }
 
         .content {
@@ -283,7 +284,7 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="https://karakib.netlify.app/assets/logo_horizontal-DGy32ZJX.svg" alt="Karakib Logo">
+                <img src="{{ url('https://karakib.netlify.app/logos/logo_horizontal.png') }}" alt="Karakib Logo">
             </div>
             <div class="tagline">Every small act of recycling creates a cleaner tomorrow</div>
         </div>

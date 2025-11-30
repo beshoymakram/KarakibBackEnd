@@ -82,6 +82,6 @@ class Order extends BaseModel
             return null;
         }
 
-        return QrCodeService::getQrCodeDataUrl($this->qr_code);
+        return route('qr.show', ['order_number' => $this->order_number]);
     }
 }
