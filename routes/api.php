@@ -89,8 +89,6 @@ Route::get('/migrate', function () {
 Route::get('/qr/{order_number}', function ($orderNumber) {
     $order = Order::where('order_number', $orderNumber)->firstOrFail();
 
-    dd($order);
-
     if (!$order->qr_code) {
         abort(404);
     }
