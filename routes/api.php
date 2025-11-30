@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\WithdrawController;
 use App\Models\CourierRequest;
 use App\Models\Order;
 use App\Models\ProductsCategory;
+use App\Services\QrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -88,11 +89,13 @@ Route::get('/migrate', function () {
 Route::get('/qr/{order_number}', function ($orderNumber) {
     $order = Order::where('order_number', $orderNumber)->firstOrFail();
 
+    dd($order);
+
     if (!$order->qr_code) {
         abort(404);
     }
 
-    $qrCodePng = \App\Services\QrCodeService::generateQrCodeForEmail($order->qr_code, 250);
+    $qrCodePng = QrCodeService::generateQrCodeForEmail($order->qr_code, 250);
 
     return response($qrCodePng)
         ->header('Content-Type', 'image/png')
