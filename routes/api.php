@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\WithdrawController;
 use App\Models\CourierRequest;
 use App\Models\Order;
 use App\Models\ProductsCategory;
+use App\Models\Request as ModelsRequest;
 use App\Services\QrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -98,7 +99,21 @@ Route::get('/qr/{order_number}', function ($orderNumber) {
     return response($qrCodePng)
         ->header('Content-Type', 'image/png')
         ->header('Cache-Control', 'public, max-age=604800');
-})->name('qr.show');
+})->name('order-qr.show');
+
+Route::get('/qr/{request_number}', function ($requestNumber) {
+    $request = ModelsRequest::where('request_number', $requestNumber)->firstOrFail();
+
+    if (!$request->qr_code) {
+        abort(404);
+    }
+
+    $qrCodePng = QrCodeService::generateQrCodeForEmail($request->qr_code, 250);
+
+    return response($qrCodePng)
+        ->header('Content-Type', 'image/png')
+        ->header('Cache-Control', 'public, max-age=604800');
+})->name('request-qr.show');
 
 Route::get('/admin-statistics', [WasteTypeController::class, 'index']);
 

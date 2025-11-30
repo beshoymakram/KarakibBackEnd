@@ -69,6 +69,6 @@ class Request extends BaseModel
             return null;
         }
 
-        return QrCodeService::getQrCodeDataUrl($this->qr_code);
+        return route('request-qr.show', ['request_number' => $this->request_number]);
     }
 }

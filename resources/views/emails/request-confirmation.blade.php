@@ -303,7 +303,7 @@
             <div class="qr-container">
                 <div class="qr-title">🔍 Show This QR Code to Courier</div>
                 <div class="qr-code">
-                    <img src="{{ $request->qr_code_image }}" alt="Collection QR Code">
+                    <img src='{{ url("$request->qr_code_image") }}' alt="Collection QR Code">
                 </div>
                 <div class="request-id">Request ID: #{{ $request->request_number }}</div>
                 <div class="qr-instruction">

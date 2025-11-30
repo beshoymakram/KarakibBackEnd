@@ -82,6 +82,6 @@ class Order extends BaseModel
             return null;
         }
 
-        return route('qr.show', ['order_number' => $this->order_number]);
+        return route('order-qr.show', ['order_number' => $this->order_number]);
     }
 }
